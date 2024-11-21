@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:test_app_flutter/screen/app_level/chat_screen.dart';
+import 'package:test_app_flutter/screen/app_level/display_user_screen.dart';
 import 'package:test_app_flutter/screen/app_level/settings_screen.dart';
+import 'package:test_app_flutter/screen/app_level/story_screen.dart';
 import 'package:test_app_flutter/screen/user_auth/forgot_password_screen.dart';
 import 'package:test_app_flutter/screen/app_level/home_screen.dart';
 import 'package:test_app_flutter/screen/user_auth/login_screen.dart';
@@ -55,13 +58,40 @@ class Routings {
               ),
             ],
           ),
+           
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: 'story',
+                path: '/story',
+                builder: (context, state) => const StoryScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: 'friend',
+                path: '/friend',
+                builder: (context, state) => const DisplayUserScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: 'chat',
+                path: '/chat',
+                builder: (context, state) => const ChatScreen(),
+              ),
+            ],
+          ),
           StatefulShellBranch(
             routes: [
               GoRoute(
                 name: 'settings',
                 path: '/settings',
-                builder: (context, state) =>
-                    const SettingsScreen(),
+                builder: (context, state) => const SettingsScreen(),
               ),
             ],
           ),

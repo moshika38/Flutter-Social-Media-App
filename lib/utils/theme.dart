@@ -8,7 +8,7 @@ class AppTheme {
     colorScheme: const ColorScheme.dark(
       primary: AppColors.primaryDark,
       secondary: AppColors.secondaryDark,
-      surface: AppColors.mainColorDark,
+      surface: AppColors.mainColorLight,
       error: AppColors.errorColor,
       onPrimary: AppColors.primaryWhite,
     ),
