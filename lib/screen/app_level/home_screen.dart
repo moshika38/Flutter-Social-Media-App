@@ -8,13 +8,9 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {}, icon: const Icon(Icons.camera_alt_outlined)),
-          title: Center(
-            child: Text(
-              'Social Feed',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+          title: Text(
+            'Social Feed',
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           automaticallyImplyLeading: false,
           actions: [
@@ -48,8 +44,7 @@ class HomeScreen extends StatelessWidget {
                             radius: 25, // Increased radius
                             backgroundColor:
                                 Theme.of(context).colorScheme.surface,
-                            child: const Icon(Icons.add,
-                                color: Colors.white),
+                            child: const Icon(Icons.add, color: Colors.white),
                           ),
                           const SizedBox(height: 4),
                           Text(
