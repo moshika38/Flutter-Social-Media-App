@@ -8,7 +8,6 @@ class StoryScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.secondary,
           title: const Text(
             'Stories',
             style: TextStyle(fontWeight: FontWeight.bold),
