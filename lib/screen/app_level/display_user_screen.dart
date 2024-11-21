@@ -34,6 +34,19 @@ class _DisplayUserScreenState extends State<DisplayUserScreen>
             'Friends',
             style: Theme.of(context).textTheme.titleLarge,
           ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Theme.of(context).brightness == Brightness.dark
+                    ? Icons.light_mode
+                    : Icons.dark_mode,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              onPressed: () {
+                // Toggle theme implementation would go here
+              },
+            ),
+          ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(48),
             child: TabBar(
@@ -96,27 +109,37 @@ class _DisplayUserScreenState extends State<DisplayUserScreen>
             // All Users Tab
             Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: TextField(
                     controller: searchController,
-                    cursorColor: Theme.of(context).colorScheme.surface,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     decoration: InputDecoration(
                       hintText: 'Search users...',
-                      prefixIcon: Icon(Icons.search,
-                          color: Theme.of(context).colorScheme.surface),
-                      border: OutlineInputBorder(
+                      hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                      enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.surface,
-                            width: 2),
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 1.5,
+                        ),
                       ),
-                      filled: true,
-                      fillColor:
-                          Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                     ),
                   ),
                 ),
