@@ -92,7 +92,7 @@ class SettingsScreen extends StatelessWidget {
                       color: Theme.of(context).colorScheme.onPrimary,
                     ),
                     title: const Text('Switch to Light Mode'),
-                    trailing: SizedBox.shrink(),
+                    trailing: const SizedBox.shrink(),
                   ),
                 ],
               ),

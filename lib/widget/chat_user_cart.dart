@@ -29,7 +29,7 @@ class ChatUserCart extends StatelessWidget {
           leading: Stack(
             children: [
               CircleAvatar(
-                backgroundImage: Image.asset("$imageUrl").image,
+                backgroundImage: Image.asset(imageUrl).image,
                 radius: 30,
               ),
               Positioned(
@@ -88,7 +88,7 @@ class ChatUserCart extends StatelessWidget {
                   ),
                   child: Text(
                     numMassage.toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
