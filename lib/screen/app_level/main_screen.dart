@@ -24,13 +24,12 @@ class MainScreen extends StatelessWidget {
           onTap: navigationShell.goBranch,
           selectedItemColor: Theme.of(context).colorScheme.surface,
           unselectedItemColor: Colors.grey,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
+          // showSelectedLabels: false,
+          // showUnselectedLabels: false,
           iconSize: 22,
           items: const [
             BottomNavigationBarItem(
                icon: FaIcon(FontAwesomeIcons.house), 
-
               label: 'Home',
             ),
             BottomNavigationBarItem(
@@ -43,7 +42,7 @@ class MainScreen extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: FaIcon(FontAwesomeIcons.solidComment), 
-              label: 'chat',
+              label: 'chats',
             ),
             BottomNavigationBarItem(
               icon: FaIcon(FontAwesomeIcons.gear), 
