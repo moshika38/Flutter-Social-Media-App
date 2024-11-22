@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_app_flutter/pages/story_view_page.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -16,11 +17,7 @@ class HomeScreen extends StatelessWidget {
           automaticallyImplyLeading: false,
           actions: [
             IconButton(
-              icon: const Icon(Icons.message_outlined),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.notifications_outlined),
+              icon: const Icon(Icons.notifications),
               onPressed: () {},
             ),
           ],
@@ -28,61 +25,29 @@ class HomeScreen extends StatelessWidget {
         body: Column(
           children: [
             const SizedBox(height: 10),
-            Container(
-              height: 100, // Increased height to accommodate larger avatars
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: ListView.builder(
+            SizedBox(
+              height: 100,
+              child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                itemCount: 11, // Increased to include the plus icon
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return Container(
-                      width: 70, // Increased size
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 25, // Increased radius
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            child: const Icon(Icons.add, color: Colors.white),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Add',
-                            style: Theme.of(context).textTheme.bodySmall,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      width: 70, // Increased size
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 25, // Increased radius
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            child: const CircleAvatar(
-                              radius: 23, // Inner circle for border effect
-                              backgroundImage:
-                                  AssetImage('assets/images/user.jpg'),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'User $index',
-                            style: Theme.of(context).textTheme.bodySmall,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                },
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.42,
+                      child: CreatePostBtn(),
+                    ),
+                    Row(
+                      children: List.generate(
+                          8,
+                          (index) => GestureDetector(
+                                onTap: () {
+                                  StoryViewPage().showStoryView(context);
+                                },
+                                child: const UserStoryCard(),
+                              ),
+                        ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Expanded(
@@ -106,6 +71,90 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class UserStoryCard extends StatelessWidget {
+  const UserStoryCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 70, // Increased size
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 25, // Increased radius
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            child: const CircleAvatar(
+              radius: 23, // Inner circle for border effect
+              backgroundImage: AssetImage('assets/images/user.jpg'),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'User',
+            style: Theme.of(context).textTheme.bodySmall,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CreatePostBtn extends StatelessWidget {
+  const CreatePostBtn({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 70,
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 25,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Icon(Icons.add, color: Colors.white),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Create  ',
+                style: Theme.of(context).textTheme.bodySmall,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: 70, // Increased size
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 25, // Increased radius
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: const CircleAvatar(
+                  radius: 23, // Inner circle for border effect
+                  backgroundImage: AssetImage('assets/images/user.jpg'),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'User',
+                style: Theme.of(context).textTheme.bodySmall,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
