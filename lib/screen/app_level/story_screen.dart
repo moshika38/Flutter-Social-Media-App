@@ -13,7 +13,7 @@ class StoryScreen extends StatelessWidget {
             'Stories',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          actions: [
+          actions: const [
             ToggleThemeBtn()
           ],
         ),

@@ -35,7 +35,7 @@ class _DisplayUserScreenState extends State<DisplayUserScreen>
             'Friends',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          actions: [
+          actions: const [
             ToggleThemeBtn()
           ],
           bottom: PreferredSize(

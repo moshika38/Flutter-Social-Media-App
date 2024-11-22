@@ -15,7 +15,7 @@ class ChatScreen extends StatelessWidget {
             'Messages',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          actions: [
+          actions: const [
            ToggleThemeBtn()
           ],
         ),

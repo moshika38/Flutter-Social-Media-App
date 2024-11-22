@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:test_app_flutter/pages/comment_page.dart';
 
 class UserPost extends StatelessWidget {
   final String userImage;
@@ -28,8 +29,7 @@ class UserPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin:   EdgeInsets.symmetric(
-          horizontal: isGoAccount ? 16 : 11, vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -77,8 +77,7 @@ class UserPost extends StatelessWidget {
                   ],
                 ),
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: isGoAccount ? 16 : 10, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
               postDes,
               style: Theme.of(context).textTheme.bodyLarge,
@@ -111,7 +110,9 @@ class UserPost extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.comment_outlined),
-                      onPressed: () {},
+                      onPressed: () {
+                        CommentPage().showCommentSheet(context);
+                      },
                     ),
                     Text(
                       postComments,
@@ -131,3 +132,5 @@ class UserPost extends StatelessWidget {
     );
   }
 }
+
+ 

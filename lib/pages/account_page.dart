@@ -45,35 +45,12 @@ class AccountPage extends StatelessWidget {
                           backgroundImage: AssetImage('assets/images/user.jpg'),
                         ),
                       ),
-                      CircleAvatar(
-                        radius: 18,
-                        backgroundColor: Theme.of(context).colorScheme.surface,
-                        child: IconButton(
-                          icon: const Icon(Icons.camera_alt_outlined,
-                              size: 18, color: Colors.white),
-                          onPressed: () {},
-                        ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit_outlined,
-                            color: Theme.of(context).colorScheme.primary),
-                        onPressed: () {},
-                      ),
-                      Text(
-                        'John Doe',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.edit_outlined),
-                        onPressed: () {},
-                      ),
-                    ],
+                  Text(
+                    'John Doe',
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 8),
                   Text(
