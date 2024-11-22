@@ -14,7 +14,7 @@ import 'package:test_app_flutter/screen/user_auth/on_boarding.dart';
 import 'package:test_app_flutter/screen/user_auth/register_screen.dart';
 
 class Routings {
-  static bool isUser = true;
+  static bool isUser = false;
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>();
   // this GlobalKey is help to hot reloading

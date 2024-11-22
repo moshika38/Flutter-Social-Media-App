@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/widget/chat_user_cart.dart';
+import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -15,17 +16,7 @@ class ChatScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           actions: [
-            IconButton(
-              icon: Icon(
-                Theme.of(context).brightness == Brightness.dark
-                    ? Icons.light_mode
-                    : Icons.dark_mode,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-              onPressed: () {
-                // Toggle theme implementation would go here
-              },
-            ),
+           ToggleThemeBtn()
           ],
         ),
         body: Column(

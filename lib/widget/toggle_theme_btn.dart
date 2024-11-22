@@ -8,7 +8,9 @@ class ToggleThemeBtn extends StatelessWidget {
     return  
         IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.dark_mode),
+          icon: Icon(Theme.of(context).brightness == Brightness.dark 
+              ? Icons.light_mode 
+              : Icons.dark_mode),
         
     );
   }

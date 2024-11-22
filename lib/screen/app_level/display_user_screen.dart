@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
 class DisplayUserScreen extends StatefulWidget {
   const DisplayUserScreen({super.key});
@@ -35,17 +36,7 @@ class _DisplayUserScreenState extends State<DisplayUserScreen>
             style: Theme.of(context).textTheme.titleLarge,
           ),
           actions: [
-            IconButton(
-              icon: Icon(
-                Theme.of(context).brightness == Brightness.dark
-                    ? Icons.light_mode
-                    : Icons.dark_mode,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-              onPressed: () {
-                // Toggle theme implementation would go here
-              },
-            ),
+            ToggleThemeBtn()
           ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(48),

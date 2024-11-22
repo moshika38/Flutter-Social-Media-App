@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
 class StoryScreen extends StatelessWidget {
   const StoryScreen({super.key});
@@ -13,17 +14,7 @@ class StoryScreen extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [
-            IconButton(
-              icon: Icon(
-                Theme.of(context).brightness == Brightness.dark
-                    ? Icons.light_mode
-                    : Icons.dark_mode,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-              onPressed: () {
-                // Toggle theme implementation would go here
-              },
-            ),
+            ToggleThemeBtn()
           ],
         ),
         body: Column(
