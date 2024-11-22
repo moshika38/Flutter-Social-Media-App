@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:test_app_flutter/pages/account_page.dart';
 import 'package:test_app_flutter/pages/chat_page.dart';
 import 'package:test_app_flutter/screen/app_level/chat_screen.dart';
 import 'package:test_app_flutter/screen/app_level/display_user_screen.dart';
@@ -56,10 +57,16 @@ class Routings {
                 name: 'home',
                 path: '/home',
                 builder: (context, state) => const HomeScreen(),
+                routes: [
+                  GoRoute(
+                name: 'account',
+                path: '/account',
+                builder: (context, state) => const AccountPage(),
+              ),
+                ],
               ),
             ],
           ),
-           
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -84,12 +91,14 @@ class Routings {
                 name: 'chat',
                 path: '/chat',
                 builder: (context, state) => const ChatScreen(),
-              ),
-              //sub router for chat screen
-              GoRoute(
-                name: 'chat_page',
-                path: '/chat_page',
-                builder: (context, state) => const ChatPage(),
+
+                routes: [
+                  GoRoute(
+                    name: 'chat_page',
+                    path: '/chat_page',
+                    builder: (context, state) => const ChatPage(),
+                  ),
+                ],
               ),
             ],
           ),
