@@ -81,26 +81,29 @@ class _StoryScreenState extends State<StoryScreen> {
                     onTap: () {
                       StoryViewPage().showStoryView(context);
                     },
-                    child: ListTile(
-                      leading: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.surface,
-                            width: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: ListTile(
+                        leading: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.surface,
+                              width: 2,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: 28,
+                            backgroundImage:
+                                Image.asset('assets/images/user.jpg').image,
                           ),
                         ),
-                        child: CircleAvatar(
-                          radius: 28,
-                          backgroundImage:
-                              Image.asset('assets/images/user.jpg').image,
+                        title: Text(
+                          'User ${index + 1}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
+                        subtitle: const Text('Today, 10:00 AM'),
                       ),
-                      title: Text(
-                        'User ${index + 1}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: const Text('Today, 10:00 AM'),
                     ),
                   );
                 },

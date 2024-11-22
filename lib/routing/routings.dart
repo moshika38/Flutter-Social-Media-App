@@ -73,7 +73,7 @@ class Routings {
                 name: 'story',
                 path: '/story',
                 builder: (context, state) => const StoryScreen(),
-                routes: [
+                routes: const [
                    
                 ],
               ),

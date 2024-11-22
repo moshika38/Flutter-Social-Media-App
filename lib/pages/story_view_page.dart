@@ -95,10 +95,10 @@ class StoryViewPage {
                                   'assets/images/sample.jpg'), // user image
                             ),
                             const SizedBox(width: 12),
-                            Column(
+                            const Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
-                              children: const [
+                              children: [
                                 Text(
                                   'User Name',
                                   style: TextStyle(
@@ -161,8 +161,8 @@ class StoryViewPage {
                             ],
                           ),
                         ),
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Icon(Icons.remove_red_eye, color: Colors.white),
                             SizedBox(width: 8),
                             Text(

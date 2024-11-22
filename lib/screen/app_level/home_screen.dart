@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.42,
-                      child: CreatePostBtn(),
+                      child: const CreatePostBtn(),
                     ),
                     Row(
                       children: List.generate(
@@ -121,7 +121,7 @@ class CreatePostBtn extends StatelessWidget {
               CircleAvatar(
                 radius: 25,
                 backgroundColor: Theme.of(context).colorScheme.surface,
-                child: Icon(Icons.add, color: Colors.white),
+                child: const Icon(Icons.add, color: Colors.white),
               ),
               const SizedBox(height: 4),
               Text(

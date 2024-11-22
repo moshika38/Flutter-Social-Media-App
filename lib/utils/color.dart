@@ -8,7 +8,8 @@ class AppColors {
  
   // Primary colors light
   static const Color primaryWhite = Color(0xFFffffff);
-  static const Color secondaryLight = Color(0xFFfefefe);
+  static const Color secondaryLight = Color(0xFFfaf9f6);
+  // static const Color secondaryLight = Color(0xFFfbfcf8);
   static const Color mainColorLight = Color.fromARGB(255, 45, 98, 211);
 
   // text colors
