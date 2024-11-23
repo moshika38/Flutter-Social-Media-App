@@ -27,6 +27,7 @@ class PostBottomAppBar {
                 ElevatedButton(
                   onPressed: () {
                     // Handle create story
+                    (context).pushNamed('create_story');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(

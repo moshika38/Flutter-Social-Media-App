@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
@@ -24,34 +25,40 @@ class _StoryScreenState extends State<StoryScreen> {
         body: Column(
           children: [
             // My Story Section
+
             ListTile(
-              leading: Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage:
-                        Image.asset('assets/images/user.jpg').image,
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          width: 2,
+              leading: GestureDetector(
+                onTap: () {
+                  context.pushNamed('create_story');
+                },
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                          Image.asset('assets/images/user.jpg').image,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            width: 2,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 15,
                         ),
                       ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 15,
-                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               title: const Text(
                 'My Status',
@@ -79,7 +86,7 @@ class _StoryScreenState extends State<StoryScreen> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      StoryViewPage().showStoryView(context,false);
+                      StoryViewPage().showStoryView(context, false);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5),
