@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
- 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
+
+
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -23,7 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: const [
-            ToggleThemeBtn(),
+          ToggleThemeBtn(),
         ],
       ),
       body: SafeArea(
@@ -203,9 +206,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           data: Theme.of(context).copyWith(
                             checkboxTheme: CheckboxThemeData(
                               fillColor:
-                                  WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
-                                  if (states.contains(WidgetState.selected)) {
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.selected)) {
                                     return Theme.of(context)
                                         .colorScheme
                                         .surface;
@@ -213,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return Colors.grey;
                                 },
                               ),
-                              checkColor: WidgetStateProperty.all(
+                              checkColor: MaterialStateProperty.all(
                                 Theme.of(context).colorScheme.secondary,
                               ),
                             ),
@@ -262,6 +265,70 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Divider(
+                                color: Theme.of(context).dividerTheme.color)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'Or continue with',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        Expanded(
+                            child: Divider(
+                                color: Theme.of(context).dividerTheme.color)),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            // Handle Google sign in
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                            side: BorderSide(
+                                color: Theme.of(context).dividerTheme.color!),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const FaIcon(FontAwesomeIcons.google,
+                              color: Colors.red),
+                          label: Text(
+                            'Google',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            // Handle Facebook sign in
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                            side: BorderSide(
+                                color: Theme.of(context).dividerTheme.color!),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const FaIcon(FontAwesomeIcons.facebook,
+                              color: Colors.blue),
+                          label: Text(
+                            'Facebook',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 24),
                     Row(

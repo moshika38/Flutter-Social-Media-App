@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 import 'package:go_router/go_router.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,10 +18,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  AppBar(
+      appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: const [
-            ToggleThemeBtn(),
+          ToggleThemeBtn(),
         ],
       ),
       body: SafeArea(
@@ -160,6 +161,70 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Divider(
+                                color: Theme.of(context).dividerTheme.color)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'Or continue with',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        Expanded(
+                            child: Divider(
+                                color: Theme.of(context).dividerTheme.color)),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            // Handle Google sign in
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                            side: BorderSide(
+                                color: Theme.of(context).dividerTheme.color!),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const FaIcon(FontAwesomeIcons.google,
+                              color: Colors.red),
+                          label: Text(
+                            'Google',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            // Handle Facebook sign in
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                            side: BorderSide(
+                                color: Theme.of(context).dividerTheme.color!),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const FaIcon(FontAwesomeIcons.facebook,
+                              color: Colors.blue),
+                          label: Text(
+                            'Facebook',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 24),
                     Row(
