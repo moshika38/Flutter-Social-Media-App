@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/pages/account_page.dart';
 import 'package:test_app_flutter/pages/chat_page.dart';
+import 'package:test_app_flutter/pages/create_post_page.dart';
 import 'package:test_app_flutter/screen/app_level/chat_screen.dart';
 import 'package:test_app_flutter/screen/app_level/display_user_screen.dart';
 import 'package:test_app_flutter/screen/app_level/settings_screen.dart';
@@ -14,7 +15,7 @@ import 'package:test_app_flutter/screen/user_auth/on_boarding.dart';
 import 'package:test_app_flutter/screen/user_auth/register_screen.dart';
 
 class Routings {
-  static bool isUser = false;
+  static bool isUser = true;
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>();
   // this GlobalKey is help to hot reloading
@@ -59,10 +60,15 @@ class Routings {
                 builder: (context, state) => const HomeScreen(),
                 routes: [
                   GoRoute(
-                name: 'account',
-                path: '/account',
-                builder: (context, state) => const AccountPage(),
-              ),
+                    name: 'account',
+                    path: '/account',
+                    builder: (context, state) => const AccountPage(),
+                  ),
+                  GoRoute(
+                    name: 'create_post',
+                    path: '/create_post',
+                    builder: (context, state) => const CreatePostPage(),
+                  ),
                 ],
               ),
             ],
@@ -73,9 +79,7 @@ class Routings {
                 name: 'story',
                 path: '/story',
                 builder: (context, state) => const StoryScreen(),
-                routes: const [
-                   
-                ],
+                routes: const [],
               ),
             ],
           ),
@@ -94,7 +98,6 @@ class Routings {
                 name: 'chat',
                 path: '/chat',
                 builder: (context, state) => const ChatScreen(),
-
                 routes: [
                   GoRoute(
                     name: 'chat_page',
@@ -111,9 +114,7 @@ class Routings {
                 name: 'settings',
                 path: '/settings',
                 builder: (context, state) => const SettingsScreen(),
-                routes: const [
-                   
-                ],
+                routes: const [],
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
+import 'package:test_app_flutter/widget/post_bottom_app_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -33,7 +34,12 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.42,
-                      child: const CreatePostBtn(),
+                      child: GestureDetector(
+                        onTap: () {
+                          PostBottomAppBar().showPostBottomAppBar(context);
+                        },
+                        child: const CreatePostBtn(),
+                      ),
                     ),
                     Row(
                       children: List.generate(
