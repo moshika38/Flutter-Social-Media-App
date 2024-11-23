@@ -37,14 +37,14 @@ class HomeScreen extends StatelessWidget {
                     ),
                     Row(
                       children: List.generate(
-                          8,
-                          (index) => GestureDetector(
-                                onTap: () {
-                                  StoryViewPage().showStoryView(context);
-                                },
-                                child: const UserStoryCard(),
-                              ),
+                        8,
+                        (index) => GestureDetector(
+                          onTap: () {
+                            StoryViewPage().showStoryView(context, false);
+                          },
+                          child: const UserStoryCard(),
                         ),
+                      ),
                     ),
                   ],
                 ),
@@ -86,10 +86,10 @@ class UserStoryCard extends StatelessWidget {
       child: Column(
         children: [
           CircleAvatar(
-            radius: 25, // Increased radius
+            radius: 30, // Increased radius
             backgroundColor: Theme.of(context).colorScheme.surface,
             child: const CircleAvatar(
-              radius: 23, // Inner circle for border effect
+              radius: 28, // Inner circle for border effect
               backgroundImage: AssetImage('assets/images/user.jpg'),
             ),
           ),
@@ -119,7 +119,7 @@ class CreatePostBtn extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 25,
+                radius: 30,
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: const Icon(Icons.add, color: Colors.white),
               ),
@@ -132,26 +132,31 @@ class CreatePostBtn extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          width: 70, // Increased size
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 25, // Increased radius
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                child: const CircleAvatar(
-                  radius: 23, // Inner circle for border effect
-                  backgroundImage: AssetImage('assets/images/user.jpg'),
+        GestureDetector(
+          onTap: () {
+            StoryViewPage().showStoryView(context, true);
+          },
+          child: Container(
+            width: 70, // Increased size
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 30, // Increased radius
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  child: const CircleAvatar(
+                    radius: 23, // Inner circle for border effect
+                    backgroundImage: AssetImage('assets/images/icon2.png'),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'User',
-                style: Theme.of(context).textTheme.bodySmall,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  'News',
+                  style: Theme.of(context).textTheme.bodySmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ),
       ],

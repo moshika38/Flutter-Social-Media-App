@@ -79,7 +79,7 @@ class _StoryScreenState extends State<StoryScreen> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      StoryViewPage().showStoryView(context);
+                      StoryViewPage().showStoryView(context,false);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5),

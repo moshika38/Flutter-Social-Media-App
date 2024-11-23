@@ -69,8 +69,8 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   _buildSettingsTile(
                     context,
-                    'Notifications',
-                    Icons.notifications_none,
+                    'Edit Account',
+                    Icons.edit_outlined,
                     onTap: () {},
                   ),
                 ],

@@ -31,132 +31,164 @@ class _DisplayUserScreenState extends State<DisplayUserScreen>
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           title: Text(
             'Friends',
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           actions: const [
-            ToggleThemeBtn()
+            ToggleThemeBtn(),
+            SizedBox(width: 8),
           ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48),
-            child: TabBar(
+        ),
+        body: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search friends...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                ),
+              ),
+            ),
+            TabBar(
               controller: _tabController,
-              indicatorColor: Theme.of(context).colorScheme.surface,
-              labelColor: Theme.of(context).colorScheme.surface,
+              labelStyle: Theme.of(context).textTheme.titleMedium,
+              unselectedLabelStyle: Theme.of(context).textTheme.bodyMedium,
               tabs: const [
                 Tab(text: 'Following'),
                 Tab(text: 'Followers'),
-                Tab(text: 'All Users'),
+                Tab(text: 'Discover'),
               ],
             ),
-          ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            // Following Tab
-            ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage:
-                        Image.asset('assets/images/user.jpg').image,
-                  ),
-                  title: Text('User ${index + 1}'),
-                  subtitle: const Text('You are following'),
-                  trailing: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                    ),
-                    child: const Text('Unfollow'),
-                  ),
-                );
-              },
-            ),
-            // Followers Tab
-            ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage:
-                        Image.asset('assets/images/user.jpg').image,
-                  ),
-                  title: Text('User ${index + 1}'),
-                  subtitle: const Text('Follows you'),
-                  trailing: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                    ),
-                    child: const Text('Follow Back'),
-                  ),
-                );
-              },
-            ),
-            // All Users Tab
-            Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: TextField(
-                    controller: searchController,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    decoration: InputDecoration(
-                      hintText: 'Search users...',
-                      hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Following Tab
+                  ListView.builder(
+                    padding: const EdgeInsets.all(8),
                     itemCount: 10,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage:
-                              Image.asset('assets/images/user.jpg').image,
-                        ),
-                        title: Text('User ${index + 1}'),
-                        subtitle: const Text('Suggested user'),
-                        trailing: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.surface,
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(8),
+                          leading: const CircleAvatar(
+                            radius: 30,
+                            backgroundImage: AssetImage('assets/images/user.jpg'),
                           ),
-                          child: const Text('Follow'),
+                          title: Text(
+                            'User ${index + 1}',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              Text(
+                                '@username${index + 1}',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: const Text('Following'),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
                   ),
-                ),
-              ],
+                  // Followers Tab
+                  ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(8),
+                          leading: const CircleAvatar(
+                            radius: 30,
+                            backgroundImage: AssetImage('assets/images/user.jpg'),
+                          ),
+                          title: Text(
+                            'User ${index + 1}',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              Text(
+                                '@username${index + 1}',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: const Text('Follow Back'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // Discover Tab
+                  ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(8),
+                          leading: const CircleAvatar(
+                            radius: 30,
+                            backgroundImage: AssetImage('assets/images/user.jpg'),
+                          ),
+                          title: Text(
+                            'User ${index + 1}',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              Text(
+                                '@username${index + 1}',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Suggested based on your interests',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: const Text('Follow'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 
 class StoryViewPage {
   
-  void showStoryView(BuildContext context) {
+  void showStoryView(BuildContext context,bool isDefault) {
     List<String> imageList = [
       "assets/images/sample.jpg",
       "assets/images/friends.jpg",
       "assets/images/post.jpg",
+    ];
+    List<String> defaultImageList = [
+      "assets/images/friends.jpg",
+      "assets/images/chat.jpg",
+      "assets/images/shair.jpg",
     ];
 
     int currentStoryIndex = 0;
@@ -42,7 +47,7 @@ class StoryViewPage {
                           }
                         } else {
                           // Right tap - go forward
-                          if (currentStoryIndex < imageList.length - 1) {
+                          if (currentStoryIndex < (isDefault?defaultImageList:imageList).length - 1) {
                             setState(() {
                               currentStoryIndex++;
                             });
@@ -54,7 +59,7 @@ class StoryViewPage {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage(imageList[currentStoryIndex]),
+                            image: AssetImage((isDefault?defaultImageList:imageList)[currentStoryIndex]),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -127,7 +132,7 @@ class StoryViewPage {
                       right: 8,
                       child: Row(
                         children: List.generate(
-                          imageList.length,
+                          (isDefault?defaultImageList:imageList).length,
                           (index) => Expanded(
                             child: Container(
                               height: 2,
