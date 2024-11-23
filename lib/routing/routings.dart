@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/pages/account_page.dart';
 import 'package:test_app_flutter/pages/chat_page.dart';
- import 'package:test_app_flutter/screen/app_level/chat_screen.dart';
+import 'package:test_app_flutter/screen/app_level/chat_screen.dart';
 import 'package:test_app_flutter/screen/app_level/display_user_screen.dart';
 import 'package:test_app_flutter/screen/app_level/settings_screen.dart';
 import 'package:test_app_flutter/screen/app_level/story_screen.dart';
@@ -111,6 +111,9 @@ class Routings {
                 name: 'settings',
                 path: '/settings',
                 builder: (context, state) => const SettingsScreen(),
+                routes: [
+                   
+                ],
               ),
             ],
           ),

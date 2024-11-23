@@ -6,6 +6,8 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isCurrectUse = true;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -45,12 +47,39 @@ class AccountPage extends StatelessWidget {
                           backgroundImage: AssetImage('assets/images/user.jpg'),
                         ),
                       ),
+                      if (isCurrectUse)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.camera_alt),
+                            color: Colors.white,
+                            onPressed: () {},
+                          ),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'John Doe',
-                    style: Theme.of(context).textTheme.headlineMedium,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (isCurrectUse)
+                        IconButton(
+                          icon: const SizedBox.shrink(),
+                          onPressed: () {},
+                        ),
+                      Text(
+                        'John Doe',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      if (isCurrectUse)
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -77,14 +106,15 @@ class AccountPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.message_outlined),
-                    label: const Text('Send Message'),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(200, 40),
+                  if (!isCurrectUse)
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.message_outlined),
+                      label: const Text('Send Message'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(200, 40),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -128,6 +158,3 @@ class AccountPage extends StatelessWidget {
     );
   }
 }
-
-
-

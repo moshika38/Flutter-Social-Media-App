@@ -113,6 +113,7 @@ class _DisplayUserScreenState extends State<DisplayUserScreen>
                   // Followers Tab
                   ListView.builder(
                     padding: const EdgeInsets.all(8),
+                    
                     itemCount: 10,
                     itemBuilder: (context, index) {
                       return Card(

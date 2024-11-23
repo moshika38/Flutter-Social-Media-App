@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -57,9 +58,11 @@ class SettingsScreen extends StatelessWidget {
                 [
                   _buildSettingsTile(
                     context,
-                    'Personal Information',
-                    Icons.person_outline,
-                    onTap: () {},
+                    'Edit Account',
+                    Icons.edit_outlined,
+                    onTap: () {
+                     (context).pushNamed('account');
+                    },
                   ),
                   _buildSettingsTile(
                     context,
@@ -67,12 +70,14 @@ class SettingsScreen extends StatelessWidget {
                     Icons.security_outlined,
                     onTap: () {},
                   ),
-                  _buildSettingsTile(
-                    context,
-                    'Edit Account',
-                    Icons.edit_outlined,
-                    onTap: () {},
-                  ),
+                  // _buildSettingsTile(
+                  //   context,
+                  //   'Edit Account',
+                  //   Icons.edit_outlined,
+                  //   onTap: () {
+                  //     (context).pushNamed('account');
+                  //   },
+                  // ),
                 ],
               ),
               _buildSettingsSection(
@@ -177,3 +182,4 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
+
