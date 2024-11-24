@@ -22,7 +22,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           if (hasImage) ...[
             ElevatedButton(
               onPressed: () {},
-              child: Row(
+              child: const Row(
                 children: [
                   Icon(Icons.post_add),
                   Text('Post'),
@@ -52,7 +52,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              TextField(
+              const TextField(
                 maxLines: 5,
                 decoration: InputDecoration(
                   hintText: "What's on your mind?",

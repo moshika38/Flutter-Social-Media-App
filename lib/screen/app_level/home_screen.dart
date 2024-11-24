@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.42,
+                      // width: MediaQuery.of(context).size.width * 0.42,
                       child: GestureDetector(
                         onTap: () {
                           PostBottomAppBar().showPostBottomAppBar(context);

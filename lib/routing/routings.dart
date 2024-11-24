@@ -14,6 +14,7 @@ import 'package:test_app_flutter/screen/user_auth/login_screen.dart';
 import 'package:test_app_flutter/screen/app_level/main_screen.dart';
 import 'package:test_app_flutter/screen/user_auth/on_boarding.dart';
 import 'package:test_app_flutter/screen/user_auth/register_screen.dart';
+import 'package:test_app_flutter/tes.dart';
 
 class Routings {
   static bool isUser = true;
@@ -23,9 +24,14 @@ class Routings {
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey, // this GlobalKey is help to hot reloading
-    initialLocation: isUser ? '/home' : '/start',
+    initialLocation: isUser ? '/test' : '/start',
     routes: [
       // app level routings
+      GoRoute(
+        name: "test",
+        path: '/test',
+        builder: (context, state) => const UploadImageButton(),
+      ),
       GoRoute(
         name: "start",
         path: '/start',
