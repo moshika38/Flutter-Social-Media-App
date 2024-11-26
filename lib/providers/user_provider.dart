@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:test_app_flutter/widget/snack_bars.dart';
 
 class UserProvider extends ChangeNotifier {
   UserCredential? _credential;
@@ -9,7 +10,7 @@ class UserProvider extends ChangeNotifier {
   String errorMessage = "";
   bool isLoading = false;
 
-  // check user signing or not
+  // check user status
   bool isUserSignedIn() {
     if (FirebaseAuth.instance.currentUser != null) {
       return true;
@@ -35,14 +36,7 @@ class UserProvider extends ChangeNotifier {
         password: password,
       );
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Sign up Successfully',
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      SnackBars().showSuccessSnackBar(context, 'Account created successfully');
       // navigate to login page
       context.go('/login');
       isLoading = false;
@@ -53,21 +47,13 @@ class UserProvider extends ChangeNotifier {
           ? e.toString().split('] ')[1]
           : e.toString();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(errorMessage, style: const TextStyle(color: Colors.white)),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      SnackBars().showErrSnackBar(context, errorMessage);
       isLoading = false;
       notifyListeners();
     }
   }
 
   //  login user with email and password
-
   Future<void> loginWithPassword(
       String email, String password, BuildContext context) async {
     isLoading = true;
@@ -77,14 +63,7 @@ class UserProvider extends ChangeNotifier {
           .signInWithEmailAndPassword(email: email, password: password);
       if (!context.mounted) return;
       if (userCredential.user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Login Successfully',
-                style: TextStyle(color: Colors.white)),
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        SnackBars().showSuccessSnackBar(context, 'Login Successfully');
         // navigate to home page
         context.go('/home');
       }
@@ -95,16 +74,24 @@ class UserProvider extends ChangeNotifier {
       errorMessage = e.toString().contains(']')
           ? e.toString().split('] ')[1]
           : e.toString();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(errorMessage, style: const TextStyle(color: Colors.white)),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      SnackBars().showErrSnackBar(context, errorMessage);
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+  // send reset password link
+  Future<void> sendResetPasswordLink(String email, BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      if (!context.mounted) return;
+      SnackBars().showSuccessSnackBar(context, 'Reset password link sent');
+    } catch (e) {
+      errorMessage = e.toString().contains(']')
+          ? e.toString().split('] ')[1]
+          : e.toString();
+      if (!context.mounted) return;
+      SnackBars().showErrSnackBar(context, errorMessage);
     }
   }
 }
