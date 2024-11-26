@@ -1,11 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:test_app_flutter/pages/account_page.dart';
 import 'package:test_app_flutter/pages/chat_page.dart';
 import 'package:test_app_flutter/pages/create_post_page.dart';
 import 'package:test_app_flutter/pages/create_story_page.dart';
-import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/screen/app_level/chat_screen.dart';
 import 'package:test_app_flutter/screen/app_level/display_user_screen.dart';
 import 'package:test_app_flutter/screen/app_level/settings_screen.dart';
@@ -19,29 +18,14 @@ import 'package:test_app_flutter/screen/user_auth/register_screen.dart';
 
 class Routings {
   static bool isUser = false;
-
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>();
   // this GlobalKey is help to hot reloading
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey, // this GlobalKey is help to hot reloading
-    initialLocation: '/home',
-    redirect: (context, state) {
-      final authNotifier = Provider.of<UserProvider>(context, listen: false);
-      
-      // Allow access to authentication-related paths
-      final isAuthRoute = state.matchedLocation == '/start' ||
-          state.matchedLocation == '/login' ||
-          state.matchedLocation == '/register' ||
-          state.matchedLocation == '/home' ||
-          state.matchedLocation == '/forgot';
-
-      if (!authNotifier.isUserSignedIn() && !isAuthRoute) {
-        return '/start';
-      }
-      return null;
-    },
+    initialLocation:
+        FirebaseAuth.instance.currentUser != null ? '/home' : '/start',
     routes: [
       // app level routings
 
