@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
+ import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -178,7 +178,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   curve: Curves.easeInOut,
                                 );
                               } else {
-                                context.push('/login');
+                                context.go('/login');
                               }
                             },
                             child: Text(

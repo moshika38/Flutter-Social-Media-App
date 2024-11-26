@@ -14,7 +14,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => UserProvider(),)
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(),
+        )
       ],
       child: const MyApp(),
     ),
@@ -28,8 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      // theme: AppTheme.darkTheme,
+      theme: AppThemeData.darkTheme,
       restorationScopeId: 'app', // this GlobalKey is help to hot reloading
       routerConfig: Routings.router,
     );

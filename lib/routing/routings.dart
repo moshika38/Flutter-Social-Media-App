@@ -29,9 +29,15 @@ class Routings {
     initialLocation: '/home',
     redirect: (context, state) {
       final authNotifier = Provider.of<UserProvider>(context, listen: false);
+      
+      // Allow access to authentication-related paths
+      final isAuthRoute = state.matchedLocation == '/start' ||
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register' ||
+          state.matchedLocation == '/forgot';
 
-      if (!authNotifier.isUserSignedIn()) {
-        return '/start'; // Redirect to login page
+      if (!authNotifier.isUserSignedIn() && !isAuthRoute) {
+        return '/start';
       }
       return null;
     },

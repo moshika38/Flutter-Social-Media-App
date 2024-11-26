@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'color.dart';
 
-class AppTheme {
+class AppThemeData {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
