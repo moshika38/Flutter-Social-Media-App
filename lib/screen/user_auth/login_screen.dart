@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
+import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,7 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Consumer<UserProvider>(
-                builder: (BuildContext context, UserProvider userProvider, child) => Form(
+                builder:
+                    (BuildContext context, UserProvider userProvider, child) =>
+                        Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           prefixIcon: const Icon(Icons.lock_outline),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               color: Colors.grey,
                             ),
                             onPressed: () {
@@ -156,7 +161,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               // Handle login
-                              context.push('/home');
+                              userProvider.loginWithPassword(
+                                _emailController.text,
+                                _passwordController.text,
+                                context,
+                              );
+                               
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -166,15 +176,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: Text(
-                            'Login',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                  color: Theme.of(context).colorScheme.secondary,
+                          child: userProvider.isLoading
+                              ? const ProgressBar()
+                              : Text(
+                                  'Login',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      ),
                                 ),
-                          ),
                         ),
                       ),
                       const SizedBox(height: 24),

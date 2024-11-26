@@ -277,15 +277,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              userProvider.signIn(_emailController.text,
+                              userProvider.createAccount(_emailController.text,
                                   _passwordController.text, context);
-                              if (userProvider.credential != null) {
-                                context.go('/login');
-                              }
-                              _nameController.clear();
-                              _emailController.clear();
-                              _passwordController.clear();
-                              _confirmPasswordController.clear();
+                               
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -295,7 +289,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: userProvider.loadingSingUp
+                          child: userProvider.isLoading
                               ? const ProgressBar()
                               : Text(
                                   'Sign up',

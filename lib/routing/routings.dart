@@ -34,6 +34,7 @@ class Routings {
       final isAuthRoute = state.matchedLocation == '/start' ||
           state.matchedLocation == '/login' ||
           state.matchedLocation == '/register' ||
+          state.matchedLocation == '/home' ||
           state.matchedLocation == '/forgot';
 
       if (!authNotifier.isUserSignedIn() && !isAuthRoute) {
