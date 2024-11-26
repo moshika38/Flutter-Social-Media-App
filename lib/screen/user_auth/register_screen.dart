@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 32),
+                    
                     Text(
                       'Create Account',
                       style: Theme.of(context).textTheme.headlineLarge,
@@ -153,7 +153,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: Colors.grey,
                           ),
                           onPressed: () {
@@ -201,12 +203,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _isConfirmPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {
-                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                              _isConfirmPasswordVisible =
+                                  !_isConfirmPasswordVisible;
                             });
                           },
                         ),
@@ -227,8 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Theme(
                           data: Theme.of(context).copyWith(
                             checkboxTheme: CheckboxThemeData(
-                              fillColor:
-                                  WidgetStateProperty.resolveWith<Color>(
+                              fillColor: WidgetStateProperty.resolveWith<Color>(
                                 (Set<WidgetState> states) {
                                   if (states.contains(WidgetState.selected)) {
                                     return Theme.of(context)

@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:test_app_flutter/pages/account_page.dart';
 import 'package:test_app_flutter/pages/chat_page.dart';
 import 'package:test_app_flutter/pages/create_post_page.dart';
 import 'package:test_app_flutter/pages/create_story_page.dart';
+import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/screen/app_level/chat_screen.dart';
 import 'package:test_app_flutter/screen/app_level/display_user_screen.dart';
 import 'package:test_app_flutter/screen/app_level/settings_screen.dart';
@@ -14,24 +16,28 @@ import 'package:test_app_flutter/screen/user_auth/login_screen.dart';
 import 'package:test_app_flutter/screen/app_level/main_screen.dart';
 import 'package:test_app_flutter/screen/user_auth/on_boarding.dart';
 import 'package:test_app_flutter/screen/user_auth/register_screen.dart';
-import 'package:test_app_flutter/tes.dart';
 
 class Routings {
-  static bool isUser = true;
+  static bool isUser = false;
+
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>();
   // this GlobalKey is help to hot reloading
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey, // this GlobalKey is help to hot reloading
-    initialLocation: isUser ? '/test' : '/start',
+    initialLocation: '/home',
+    redirect: (context, state) {
+      final authNotifier = Provider.of<UserProvider>(context, listen: false);
+
+      if (!authNotifier.isUserSignedIn()) {
+        return '/start'; // Redirect to login page
+      }
+      return null;
+    },
     routes: [
       // app level routings
-      GoRoute(
-        name: "test",
-        path: '/test',
-        builder: (context, state) => const UploadImageButton(),
-      ),
+
       GoRoute(
         name: "start",
         path: '/start',
