@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
-import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -289,12 +288,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: userProvider.isLoading
-                              ? const ProgressBar()
-                              : Text(
-                                  'Sign up',
-                                  style: Theme.of(context)
-                                      .textTheme
+                          child: Text(
+                            userProvider.isLoading ? 'Signing up...' : 'Sign up',
+                            style: Theme.of(context)
+                                .textTheme
                                       .titleLarge
                                       ?.copyWith(
                                         color: Theme.of(context)
@@ -329,6 +326,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           OutlinedButton.icon(
                             onPressed: () {
                               // Handle Google sign in
+                              userProvider.signInWithGoogle(context);
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(

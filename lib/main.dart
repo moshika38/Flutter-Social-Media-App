@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      theme: AppThemeData.darkTheme,
+      // theme: AppThemeData.darkTheme,
+      theme: AppThemeData.lightTheme,
       restorationScopeId: 'app', // this GlobalKey is help to hot reloading
       routerConfig: Routings.router,
     );

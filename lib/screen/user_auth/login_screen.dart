@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
-import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -166,7 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _passwordController.text,
                                 context,
                               );
-                               
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -176,19 +174,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: userProvider.isLoading
-                              ? const ProgressBar()
-                              : Text(
-                                  'Login',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      ),
+                          child: Text(
+                            userProvider.isLoading ? 'Logging in...' : 'Login',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                 ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -216,6 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           OutlinedButton.icon(
                             onPressed: () {
                               // Handle Google sign in
+                              userProvider.signInWithGoogle(context);
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(

@@ -95,12 +95,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ),
                           ),
                           child: Text(
-                            'Reset Password',
+                            userProvider.isLoading
+                                ? 'Sending...'
+                                : 'Reset Password',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge
                                 ?.copyWith(
-                                  color: Theme.of(context).colorScheme.secondary,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                 ),
                           ),
                         ),
