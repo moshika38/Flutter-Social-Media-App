@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/widget/snack_bars.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class UserProvider extends ChangeNotifier {
   UserCredential? _credential;
@@ -50,6 +50,7 @@ class UserProvider extends ChangeNotifier {
           : e.toString();
 
       SnackBars().showErrSnackBar(context, errorMessage);
+       
       isLoading = false;
       notifyListeners();
     }
@@ -145,7 +146,42 @@ class UserProvider extends ChangeNotifier {
   }
 
  // facebook login
- 
+
+  Future<void> signInWithFacebook(BuildContext context) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      
+      if (loginResult.status != LoginStatus.success) {
+        isLoading = false;
+        notifyListeners();
+        return;
+      }
+
+      final OAuthCredential facebookAuthCredential = 
+          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+
+      final userCredential = 
+          await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+
+      if (!context.mounted) return;
+      if (userCredential.user != null) {
+        SnackBars().showSuccessSnackBar(context, 'Facebook Sign In Successful');
+        context.go('/home');
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      errorMessage = e.toString().contains(']') 
+          ? e.toString().split('] ')[1]
+          : e.toString();
+      SnackBars().showErrSnackBar(context, errorMessage);
+    }
+    print('Error signing in with Facebook: $errorMessage');
+    isLoading = false;
+    notifyListeners();
+  }
+
  
  
   

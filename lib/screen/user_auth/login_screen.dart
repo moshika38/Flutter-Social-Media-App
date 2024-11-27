@@ -232,6 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           OutlinedButton.icon(
                             onPressed: () {
                               // Handle Facebook sign in
+                              userProvider.signInWithFacebook(context);
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(

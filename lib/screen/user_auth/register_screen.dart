@@ -347,6 +347,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           OutlinedButton.icon(
                             onPressed: () {
                               // Handle Facebook sign in
+                              userProvider.signInWithFacebook(context);
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
