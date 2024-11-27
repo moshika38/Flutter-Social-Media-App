@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
@@ -212,6 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               // Handle Google sign in
                               userProvider.signInWithGoogle(context);
+                               
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -233,6 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               // Handle Facebook sign in
                               userProvider.signInWithFacebook(context);
+                               
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(

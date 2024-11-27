@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
@@ -289,16 +289,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           child: Text(
-                            userProvider.isLoading ? 'Signing up...' : 'Sign up',
+                            userProvider.isLoading
+                                ? 'Signing up...'
+                                : 'Sign up',
                             style: Theme.of(context)
                                 .textTheme
-                                      .titleLarge
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      ),
+                                .titleLarge
+                                ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                 ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -327,6 +328,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: () {
                               // Handle Google sign in
                               userProvider.signInWithGoogle(context);
+                               
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -348,6 +350,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: () {
                               // Handle Facebook sign in
                               userProvider.signInWithFacebook(context);
+                               
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(

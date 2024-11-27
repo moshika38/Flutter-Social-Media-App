@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 
@@ -6,7 +7,7 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isCurrectUse = true;
+    bool isUserLogin = FirebaseAuth.instance.currentUser != null ? true : false;
 
     return Scaffold(
       appBar: AppBar(
@@ -47,7 +48,7 @@ class AccountPage extends StatelessWidget {
                           backgroundImage: AssetImage('assets/images/user.jpg'),
                         ),
                       ),
-                      if (isCurrectUse)
+                      if (isUserLogin)
                         Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.surface,
@@ -65,7 +66,7 @@ class AccountPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (isCurrectUse)
+                      if (isUserLogin)
                         IconButton(
                           icon: const SizedBox.shrink(),
                           onPressed: () {},
@@ -74,7 +75,7 @@ class AccountPage extends StatelessWidget {
                         'John Doe',
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
-                      if (isCurrectUse)
+                      if (isUserLogin)
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {},
@@ -106,7 +107,7 @@ class AccountPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  if (!isCurrectUse)
+                  if (!isUserLogin)
                     ElevatedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.message_outlined),
