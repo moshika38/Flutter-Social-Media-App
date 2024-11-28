@@ -45,8 +45,7 @@ class UserProvider extends ChangeNotifier {
       SnackBars().showSuccessSnackBar(context, 'Account created successfully');
       // navigate to login page
       if (FirebaseAuth.instance.currentUser != null) {
-        if (createUserProfile(FirebaseAuth.instance.currentUser!.uid, uName) ==
-            true) {
+        if (await createUserProfile(FirebaseAuth.instance.currentUser!.uid, uName) == true) {
           context.go('/home');
           notifyListeners();
         }
@@ -143,9 +142,10 @@ class UserProvider extends ChangeNotifier {
       if (!context.mounted) return;
       if (userCredential.user != null) {
         SnackBars().showSuccessSnackBar(context, 'Google Sign In Successful');
-        if (createUserProfile(userCredential.user!.uid, null) == true) {
+        if (await createUserProfile(userCredential.user!.uid, null)) {
           context.go('/home');
           notifyListeners();
+          return;
         }
         context.go('/home');
       }
@@ -183,7 +183,7 @@ class UserProvider extends ChangeNotifier {
       if (!context.mounted) return;
       if (userCredential.user != null) {
         SnackBars().showSuccessSnackBar(context, 'Facebook Sign In Successful');
-        if (createUserProfile(userCredential.user!.uid, null) == true) {
+        if (await createUserProfile(userCredential.user!.uid, null) == true) {
           context.go('/home');
           notifyListeners();
         }

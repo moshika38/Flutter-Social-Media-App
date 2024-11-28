@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/user_model.dart';
+import 'package:test_app_flutter/providers/theme_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
@@ -13,6 +14,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -50,9 +52,9 @@ class SettingsScreen extends StatelessWidget {
                             CircleAvatar(
                               radius: 40,
                               backgroundImage: NetworkImage(
-                                  user.profilePicture != ""
-                                      ? user.profilePicture!
-                                      : AppUrl.baseUserUrl,
+                                user.profilePicture != ""
+                                    ? user.profilePicture!
+                                    : AppUrl.baseUserUrl,
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -111,13 +113,23 @@ class SettingsScreen extends StatelessWidget {
                             trailing: const Text('English'),
                             onTap: () {},
                           ),
-                          ListTile(
-                            leading: Icon(
-                              Icons.dark_mode_outlined,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                          GestureDetector(
+                            onTap: () {
+                              themeProvider
+                                  .toggleTheme(!themeProvider.isDarkMode);
+                            },
+                            child: ListTile(
+                              leading: Icon(
+                                themeProvider.isDarkMode
+                                    ? Icons.light_mode_outlined
+                                    : Icons.dark_mode_outlined,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                              title: Text(themeProvider.isDarkMode
+                                  ? 'Switch to Light Mode'
+                                  : 'Switch to Dark Mode'),
+                              trailing: const SizedBox.shrink(),
                             ),
-                            title: const Text('Switch to Light Mode'),
-                            trailing: const SizedBox.shrink(),
                           ),
                         ],
                       ),

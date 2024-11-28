@@ -317,8 +317,8 @@ Future<void> _buildEditProfilePictureDialog(
   String uid,
   UserProvider userProvider,
 ) async {
-  File? _image;
-  final ImagePicker _picker = ImagePicker();
+  File? image0;
+  final ImagePicker picker = ImagePicker();
 
   showModalBottomSheet(
     context: context,
@@ -330,14 +330,14 @@ Future<void> _buildEditProfilePictureDialog(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (_image != null) ...[
+                if (image0 != null) ...[
                   Stack(
                     alignment: Alignment.center,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.file(
-                          _image!,
+                          image0!,
                           height: 200,
                           width: double.infinity,
                           fit: BoxFit.cover,
@@ -365,7 +365,7 @@ Future<void> _buildEditProfilePictureDialog(
                               TextButton.icon(
                                 onPressed: () {
                                   setState(() {
-                                    _image = null;
+                                    image0 = null;
                                   });
                                 },
                                 icon: const Icon(Icons.close,
@@ -377,7 +377,7 @@ Future<void> _buildEditProfilePictureDialog(
                               ),
                               TextButton.icon(
                                 onPressed: () async {
-                                  userProvider.uploadImage(_image, uid);
+                                  userProvider.uploadImage(image0, uid);
                                 },
                                 icon: const Icon(Icons.upload,
                                     color: Colors.white),
@@ -394,18 +394,18 @@ Future<void> _buildEditProfilePictureDialog(
                   ),
                   const SizedBox(height: 16),
                 ],
-                if (_image == null)
+                if (image0 == null)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () async {
-                          final XFile? image = await _picker.pickImage(
+                          final XFile? image = await picker.pickImage(
                             source: ImageSource.gallery,
                           );
                           if (image != null) {
                             setState(() {
-                              _image = File(image.path);
+                              image0 = File(image.path);
                             });
                           }
                         },
@@ -423,12 +423,12 @@ Future<void> _buildEditProfilePictureDialog(
                       ),
                       ElevatedButton.icon(
                         onPressed: () async {
-                          final XFile? photo = await _picker.pickImage(
+                          final XFile? photo = await picker.pickImage(
                             source: ImageSource.camera,
                           );
                           if (photo != null) {
                             setState(() {
-                              _image = File(photo.path);
+                              image0 = File(photo.path);
                             });
                           }
                         },

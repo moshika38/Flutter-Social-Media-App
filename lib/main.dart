@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_app_flutter/providers/theme_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:test_app_flutter/routing/routings.dart';
 import 'package:test_app_flutter/utils/theme.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-// import 'package:test_app_flutter/models/upload_image.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,40 +15,40 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await dotenv.load(fileName: ".env");
+  await Hive.initFlutter();
+  await Hive.openBox<bool>('theme');
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => UserProvider(),
-        )
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      // theme: AppThemeData.darkTheme,
-      theme: AppThemeData.lightTheme,
-      restorationScopeId: 'app', // this GlobalKey is help to hot reloading
-      routerConfig: Routings.router,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) => MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: themeProvider.isDarkMode
+            ? AppThemeData.darkTheme
+            : AppThemeData.lightTheme,
+        restorationScopeId: 'app',
+        routerConfig: Routings.router,
+      ),
     );
   }
 }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: CloudinaryUploadPage(),
-//     );
-//   }
-// }
