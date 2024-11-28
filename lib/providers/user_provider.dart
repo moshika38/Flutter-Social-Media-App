@@ -26,7 +26,6 @@ class UserProvider extends ChangeNotifier {
   // sing out user
   void signOut() async {
     await FirebaseAuth.instance.signOut();
-    notifyListeners();
   }
 
   //  create password based account

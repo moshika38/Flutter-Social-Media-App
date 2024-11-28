@@ -11,7 +11,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -22,8 +22,17 @@ class SettingsScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: FutureBuilder<UserModel?>(
-            future: userProvider.getUserById(FirebaseAuth.instance.currentUser!.uid),
+            future: userProvider
+                .getUserById(FirebaseAuth.instance.currentUser!.uid),
             builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                );
+              }
+
               if (snapshot.hasData) {
                 final user = snapshot.data!;
                 return Column(
@@ -31,15 +40,18 @@ class SettingsScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
-                        color:
-                            Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         children: [
                           CircleAvatar(
                             radius: 40,
-                            backgroundImage: NetworkImage(user.profilePicture ?? "assets/images/user.jpg"),
+                            backgroundImage: NetworkImage(user.profilePicture ??
+                                "assets/images/user.jpg"),
                           ),
                           const SizedBox(width: 16),
                           Column(
@@ -47,7 +59,8 @@ class SettingsScreen extends StatelessWidget {
                             children: [
                               Text(
                                 user.name,
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                               const SizedBox(height: 4),
                               Text(
@@ -60,7 +73,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-                
+
                     // Settings List
                     _buildSettingsSection(
                       context,
@@ -71,7 +84,10 @@ class SettingsScreen extends StatelessWidget {
                           'Edit Account',
                           Icons.edit_outlined,
                           onTap: () {
-                           (context).pushNamed('account');
+                            (context).pushNamed(
+                              'account',
+                              extra: FirebaseAuth.instance.currentUser!.uid,
+                            );
                           },
                         ),
                         _buildSettingsTile(
@@ -80,7 +96,6 @@ class SettingsScreen extends StatelessWidget {
                           Icons.security_outlined,
                           onTap: () {},
                         ),
-                         
                       ],
                     ),
                     _buildSettingsSection(
@@ -195,4 +210,3 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
-

@@ -66,7 +66,9 @@ class Routings {
                   GoRoute(
                     name: 'account',
                     path: '/account',
-                    builder: (context, state) => const AccountPage(),
+                    builder: (context, state) => AccountPage(
+                      uid: state.extra as String,
+                    ),
                   ),
                   GoRoute(
                     name: 'create_post',

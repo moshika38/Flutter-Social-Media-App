@@ -38,7 +38,10 @@ class UserPost extends StatelessWidget {
             child: ListTile(
               leading: GestureDetector(
                 onTap: () {
-                  (context).pushNamed('account');
+                  (context).pushNamed(
+                    'account',
+                    extra: userId,
+                  );
                 },
                 child: Container(
                   padding: const EdgeInsets.all(2),
