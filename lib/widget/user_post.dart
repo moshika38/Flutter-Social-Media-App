@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/pages/comment_page.dart';
 
-class UserPost extends StatelessWidget {
+class UserPost extends StatefulWidget {
   final String userImage;
   final String userName;
   final String userId;
@@ -27,6 +27,13 @@ class UserPost extends StatelessWidget {
   });
 
   @override
+  State<UserPost> createState() => _UserPostState();
+}
+
+class _UserPostState extends State<UserPost> {
+  bool isFav = false;
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -40,7 +47,7 @@ class UserPost extends StatelessWidget {
                 onTap: () {
                   (context).pushNamed(
                     'account',
-                    extra: userId,
+                    extra: widget.userId,
                   );
                 },
                 child: Container(
@@ -53,17 +60,17 @@ class UserPost extends StatelessWidget {
                     ),
                   ),
                   child: CircleAvatar(
-                    radius: isGoAccount ? 20 : 15,
-                    backgroundImage: AssetImage(userImage),
+                    radius: widget.isGoAccount ? 20 : 15,
+                    backgroundImage: AssetImage(widget.userImage),
                   ),
                 ),
               ),
               title: Text(
-                userName,
+                widget.userName,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(
-                postTime,
+                widget.postTime,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               trailing: IconButton(
@@ -81,15 +88,22 @@ class UserPost extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Text(
-                    postDes,
+                    widget.postDes,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
-                Image.asset(
-                  postImage,
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
+                GestureDetector(
+                  onDoubleTap: () {
+                    setState(() {
+                      isFav = !isFav;
+                    });
+                  },
+                  child: Image.asset(
+                    widget.postImage,
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -99,11 +113,18 @@ class UserPost extends StatelessWidget {
                       Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.favorite_border),
-                            onPressed: () {},
+                            icon: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              color: isFav ? Colors.red : null,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isFav = !isFav;
+                              });
+                            },
                           ),
                           Text(
-                            postLikes,
+                            widget.postLikes,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
@@ -117,7 +138,7 @@ class UserPost extends StatelessWidget {
                             },
                           ),
                           Text(
-                            postComments,
+                            widget.postComments,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
