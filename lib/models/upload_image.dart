@@ -28,6 +28,8 @@ class _CloudinaryUploadPageState extends State<CloudinaryUploadPage> {
     }
   }
 
+
+
   Future<void> _uploadImage() async {
     if (_image == null) {
       ScaffoldMessenger.of(context).showSnackBar(

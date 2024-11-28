@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_app_flutter/models/upload_image.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:test_app_flutter/routing/routings.dart';
+import 'package:test_app_flutter/utils/theme.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:test_app_flutter/models/upload_image.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,28 +26,28 @@ void main() async {
   );
 }
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp.router(
-//       debugShowCheckedModeBanner: false,
-//       // theme: AppThemeData.darkTheme,
-//       theme: AppThemeData.lightTheme,
-//       restorationScopeId: 'app', // this GlobalKey is help to hot reloading
-//       routerConfig: Routings.router,
-//     );
-//   }
-// }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: CloudinaryUploadPage(),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      // theme: AppThemeData.darkTheme,
+      theme: AppThemeData.lightTheme,
+      restorationScopeId: 'app', // this GlobalKey is help to hot reloading
+      routerConfig: Routings.router,
     );
   }
 }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: CloudinaryUploadPage(),
+//     );
+//   }
+// }

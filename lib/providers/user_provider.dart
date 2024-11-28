@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'package:cloudinary/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/models/user_model.dart';
@@ -30,7 +33,7 @@ class UserProvider extends ChangeNotifier {
 
   //  create password based account
   Future<void> createAccount(
-      String email, String password, BuildContext context,String uName) async {
+      String email, String password, BuildContext context, String uName) async {
     isLoading = true;
     notifyListeners();
     try {
@@ -248,5 +251,46 @@ class UserProvider extends ChangeNotifier {
         .doc(uid)
         .update({'name': name});
     notifyListeners();
+  }
+
+  // upload user profile image
+  Future<void> uploadImage(File? image, String uid) async {
+    if (image == null) {
+      debugPrint('No image provided');
+      return;
+    }
+
+    final cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME']!;
+    final apiKey = dotenv.env['CLOUDINARY_API_KEY']!;
+    final apiSecret = dotenv.env['CLOUDINARY_API_SECRET']!;
+
+    final cloudinary = Cloudinary.signedConfig(
+      cloudName: cloudName,
+      apiKey: apiKey,
+      apiSecret: apiSecret,
+    );
+
+    try {
+      final response = await cloudinary.upload(
+        file: image.path,
+        fileBytes: image.readAsBytesSync(),
+        resourceType: CloudinaryResourceType.image,
+        folder: 'users',
+        publicId: uid,
+      );
+
+      if (response.isSuccessful) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .update({'profilePicture': response.secureUrl});
+        notifyListeners();
+      } else {
+        throw Exception('Failed to upload image');
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      notifyListeners();
+    }
   }
 }
