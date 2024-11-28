@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
+import 'package:test_app_flutter/widget/lost_connection.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 
 class AccountPage extends StatelessWidget {
@@ -68,9 +69,10 @@ class AccountPage extends StatelessWidget {
                                 ),
                                 child: CircleAvatar(
                                   radius: 50,
-                                  backgroundImage: NetworkImage(
-                                      user.profilePicture ??
-                                          "assets/images/user.jpg"),
+                                  backgroundImage: user.profilePicture != null
+                                      ? NetworkImage(user.profilePicture!)
+                                      : AssetImage("assets/images/user.jpg")
+                                          as ImageProvider,
                                 ),
                               ),
                               if (isCurrentUser)
@@ -105,7 +107,14 @@ class AccountPage extends StatelessWidget {
                               if (isCurrentUser)
                                 IconButton(
                                   icon: const Icon(Icons.edit),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    _buildEditNameDialog(
+                                      context,
+                                      user.name,
+                                      uid,
+                                      userProvider,
+                                    );
+                                  },
                                 ),
                             ],
                           ),
@@ -173,12 +182,8 @@ class AccountPage extends StatelessWidget {
                   ],
                 );
               }
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              }
-              return const SizedBox.shrink();
+
+              return const LostConnection();
             },
           ),
         ),
@@ -201,4 +206,97 @@ class AccountPage extends StatelessWidget {
       ],
     );
   }
+}
+
+void _buildEditNameDialog(
+    BuildContext context, String name, String uid, UserProvider userProvider) {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController(text: name);
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      title: Text(
+        'Edit Name',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          controller: _nameController,
+          decoration: InputDecoration(
+            labelText: 'Full Name',
+            labelStyle: const TextStyle(color: Colors.grey),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.grey),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.grey),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.grey),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.grey),
+            ),
+            errorStyle: const TextStyle(color: Colors.red),
+            prefixIcon: const Icon(Icons.person_outline),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your name';
+            }
+            return null;
+          },
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Text(
+            'Cancel',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              // TODO: Update name logic here
+              userProvider.updateUserName(uid, _nameController.text);
+              Navigator.pop(context);
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Text(
+            'Save',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }

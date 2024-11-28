@@ -240,4 +240,13 @@ class UserProvider extends ChangeNotifier {
     }
     return null;
   }
+
+  // update user name
+  Future<void> updateUserName(String uid, String name) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({'name': name});
+    notifyListeners();
+  }
 }
