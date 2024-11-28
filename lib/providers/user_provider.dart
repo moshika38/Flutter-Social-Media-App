@@ -30,7 +30,7 @@ class UserProvider extends ChangeNotifier {
 
   //  create password based account
   Future<void> createAccount(
-      String email, String password, BuildContext context) async {
+      String email, String password, BuildContext context,String uName) async {
     isLoading = true;
     notifyListeners();
     try {
@@ -42,7 +42,7 @@ class UserProvider extends ChangeNotifier {
       SnackBars().showSuccessSnackBar(context, 'Account created successfully');
       // navigate to login page
       if (FirebaseAuth.instance.currentUser != null) {
-        if (createUserProfile(FirebaseAuth.instance.currentUser!.uid, null) ==
+        if (createUserProfile(FirebaseAuth.instance.currentUser!.uid, uName) ==
             true) {
           context.go('/home');
           notifyListeners();

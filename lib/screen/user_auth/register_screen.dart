@@ -277,7 +277,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               userProvider.createAccount(_emailController.text,
-                                  _passwordController.text, context);
+                                  _passwordController.text, context, _nameController.text);
                                
                             }
                           },

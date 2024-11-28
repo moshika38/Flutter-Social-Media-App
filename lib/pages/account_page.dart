@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
+import 'package:test_app_flutter/utils/app_url.dart';
 import 'package:test_app_flutter/widget/lost_connection.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
@@ -67,10 +68,11 @@ class AccountPage extends StatelessWidget {
                                   ),
                                   child: CircleAvatar(
                                     radius: 50,
-                                    backgroundImage: user.profilePicture != null
-                                        ? NetworkImage(user.profilePicture!)
-                                        : AssetImage("assets/images/user.jpg")
-                                            as ImageProvider,
+                                    backgroundImage: NetworkImage(
+                                        user.profilePicture != ""
+                                            ? user.profilePicture!
+                                            : AppUrl.baseUserUrl,
+                                    ),
                                   ),
                                 ),
                                 if (isCurrentUser)

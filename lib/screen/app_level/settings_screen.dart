@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
+import 'package:test_app_flutter/utils/app_url.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -49,8 +50,10 @@ class SettingsScreen extends StatelessWidget {
                             CircleAvatar(
                               radius: 40,
                               backgroundImage: NetworkImage(
-                                  user.profilePicture ??
-                                      "assets/images/user.jpg"),
+                                  user.profilePicture != ""
+                                      ? user.profilePicture!
+                                      : AppUrl.baseUserUrl,
+                              ),
                             ),
                             const SizedBox(width: 16),
                             Column(
