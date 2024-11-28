@@ -29,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
                   .getUserById(FirebaseAuth.instance.currentUser!.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return ProgressBar();
+                  return const ProgressBar();
                 }
 
                 if (snapshot.hasData) {
@@ -162,7 +162,7 @@ class SettingsScreen extends StatelessWidget {
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               },
             ),

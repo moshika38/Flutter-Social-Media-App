@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
@@ -69,9 +72,9 @@ class AccountPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     radius: 50,
                                     backgroundImage: NetworkImage(
-                                        user.profilePicture != ""
-                                            ? user.profilePicture!
-                                            : AppUrl.baseUserUrl,
+                                      user.profilePicture != ""
+                                          ? user.profilePicture!
+                                          : AppUrl.baseUserUrl,
                                     ),
                                   ),
                                 ),
@@ -85,7 +88,13 @@ class AccountPage extends StatelessWidget {
                                     child: IconButton(
                                       icon: const Icon(Icons.camera_alt),
                                       color: Colors.white,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        _buildEditProfilePictureDialog(
+                                          context,
+                                          uid,
+                                          userProvider,
+                                        );
+                                      },
                                     ),
                                   ),
                               ],
@@ -212,8 +221,8 @@ class AccountPage extends StatelessWidget {
 
 void _buildEditNameDialog(
     BuildContext context, String name, String uid, UserProvider userProvider) {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: name);
+  final formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController(text: name);
 
   showDialog(
     context: context,
@@ -224,9 +233,9 @@ void _buildEditNameDialog(
         style: Theme.of(context).textTheme.titleLarge,
       ),
       content: Form(
-        key: _formKey,
+        key: formKey,
         child: TextFormField(
-          controller: _nameController,
+          controller: nameController,
           decoration: InputDecoration(
             labelText: 'Full Name',
             labelStyle: const TextStyle(color: Colors.grey),
@@ -279,9 +288,9 @@ void _buildEditNameDialog(
         ),
         ElevatedButton(
           onPressed: () {
-            if (_formKey.currentState!.validate()) {
+            if (formKey.currentState!.validate()) {
               // TODO: Update name logic here
-              userProvider.updateUserName(uid, _nameController.text);
+              userProvider.updateUserName(uid, nameController.text);
               Navigator.pop(context);
             }
           },
@@ -300,5 +309,149 @@ void _buildEditNameDialog(
         ),
       ],
     ),
+  );
+}
+
+Future<void> _buildEditProfilePictureDialog(
+  BuildContext context,
+  String uid,
+  UserProvider userProvider,
+) async {
+  final ImagePicker picker = ImagePicker();
+  XFile? imageFile;
+
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (imageFile != null) ...[
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          File(imageFile!.path),
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.8),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              TextButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    imageFile = null;
+                                  });
+                                },
+                                icon: const Icon(Icons.close,
+                                    color: Colors.white),
+                                label: const Text(
+                                  'Cancel',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              TextButton.icon(
+                                onPressed: () {
+                                  // TODO: Implement upload logic
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(Icons.upload,
+                                    color: Colors.white),
+                                label: const Text(
+                                  'Upload',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                if (imageFile == null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final XFile? image = await picker.pickImage(
+                            source: ImageSource.gallery,
+                          );
+                          if (image != null) {
+                            setState(() {
+                              imageFile = image;
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.photo_library),
+                        label: const Text('Choose from Gallery'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final XFile? photo = await picker.pickImage(
+                            source: ImageSource.camera,
+                          );
+                          if (photo != null) {
+                            setState(() {
+                              imageFile = photo;
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.camera_alt),
+                        label: const Text('Take Photo'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          );
+        },
+      );
+    },
   );
 }

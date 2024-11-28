@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
@@ -276,9 +276,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              userProvider.createAccount(_emailController.text,
-                                  _passwordController.text, context, _nameController.text);
-                               
+                              userProvider.createAccount(
+                                  _emailController.text,
+                                  _passwordController.text,
+                                  context,
+                                  _nameController.text);
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -328,7 +330,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: () {
                               // Handle Google sign in
                               userProvider.signInWithGoogle(context);
-                               
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -350,7 +351,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: () {
                               // Handle Facebook sign in
                               userProvider.signInWithFacebook(context);
-                               
                             },
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(

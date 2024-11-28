@@ -1,8 +1,8 @@
+import 'package:cloudinary/cloudinary.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class CloudinaryUploadPage extends StatefulWidget {
   const CloudinaryUploadPage({super.key});
@@ -29,33 +29,46 @@ class _CloudinaryUploadPageState extends State<CloudinaryUploadPage> {
   }
 
   Future<void> _uploadImage() async {
-    if (_image == null) return;
+    if (_image == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select an image first')),
+      );
+      return;
+    }
 
-    String cloudinaryUrl =
-        'https://api.cloudinary.com/v1_1/dcw8dvlqo/image/upload';
+    final cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME']!;
+    final apiKey = dotenv.env['CLOUDINARY_API_KEY']!;
+    final apiSecret = dotenv.env['CLOUDINARY_API_SECRET']!;
+
+    final cloudinary = Cloudinary.signedConfig(
+      cloudName: cloudName,
+      apiKey: apiKey,
+      apiSecret: apiSecret,
+    );
 
     try {
-      var request = http.MultipartRequest('POST', Uri.parse(cloudinaryUrl))
-        ..fields['upload_preset'] = 'userURL' // Preset නම
-        ..fields['folder'] = 'users' // Folder නම
-        ..files.add(await http.MultipartFile.fromPath('file', _image!.path));
+      final response = await cloudinary.upload(
+        file: _image!.path,
+        fileBytes: _image!.readAsBytesSync(),
+        resourceType: CloudinaryResourceType.image,
+        folder: 'users',
+        publicId: 'S002',
+      );
 
-      var response = await request.send();
-
-      if (response.statusCode == 200) {
-        var responseData = await response.stream.bytesToString();
-        var jsonResponse = json.decode(responseData);
-
+      if (response.isSuccessful) {
         setState(() {
-          _uploadedImageUrl = jsonResponse['secure_url']; // Uploaded Image URL
+          _uploadedImageUrl = response.secureUrl;
         });
-
-        print('Image uploaded: $_uploadedImageUrl');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Image uploaded successfully')),
+        );
       } else {
-        print('Failed to upload image. Status code: ${response.statusCode}');
+        throw Exception('Failed to upload image');
       }
     } catch (e) {
-      print('Error uploading image: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error uploading image: $e')),
+      );
     }
   }
 
