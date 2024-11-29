@@ -70,6 +70,15 @@ class HomeScreen extends StatelessWidget {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: ProgressBar());
                   }
+                  if (snapshot.hasData && snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Column(
+                        children: [
+                          Text('No posts available yet !'),
+                        ],
+                      ),
+                    );
+                  }
                   if (snapshot.hasData) {
                     final posts = snapshot.data as List<PostModel>;
 
@@ -84,6 +93,7 @@ class HomeScreen extends StatelessWidget {
                               if (snapshot.hasData) {
                                 final user = snapshot.data as UserModel;
                                 return UserPost(
+                                  postId: posts[index].id,
                                   isGoAccount: true,
                                   userId: user.id,
                                   userImage: user.profilePicture.toString(),

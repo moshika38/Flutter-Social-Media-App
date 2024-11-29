@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:test_app_flutter/pages/comment_page.dart';
+import 'package:test_app_flutter/providers/post_provider.dart';
 
 class UserPost extends StatefulWidget {
   final String userImage;
@@ -12,6 +14,7 @@ class UserPost extends StatefulWidget {
   final String postImage;
   final String postLikes;
   final String postComments;
+  final String postId;
   final bool isGoAccount;
 
   const UserPost({
@@ -24,6 +27,7 @@ class UserPost extends StatefulWidget {
     required this.postImage,
     required this.postLikes,
     required this.postComments,
+    required this.postId,
     required this.isGoAccount,
   });
 
@@ -42,6 +46,38 @@ class _UserPostState extends State<UserPost> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: isMoreIcon ? 30 : 0,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 28),
+              child: isMoreIcon
+                  ? Consumer<PostProvider>(
+                      builder: (context, postProvider, child) => Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              _showEditPostTab(
+                                  context, widget.postId, widget.postDes);
+                            },
+                            icon: const Icon(Icons.edit),
+                          ),
+                          const SizedBox(width: 10),
+                          IconButton(
+                            onPressed: () {
+                              // TODO: delete
+                              postProvider.deletePost(widget.postId);
+                            },
+                            icon: const Icon(Icons.delete),
+                          ),
+                        ],
+                      ),
+                    )
+                  : null,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 5),
             child: ListTile(
@@ -83,34 +119,6 @@ class _UserPostState extends State<UserPost> {
                           isMoreIcon = !isMoreIcon;
                         });
                       },
-                    )
-                  : null,
-            ),
-          ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: isMoreIcon ? 30 : 0,
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 28),
-              child: isMoreIcon
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            // TODO: edite
-                          },
-                          icon: const Icon(Icons.edit),
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          onPressed: () {
-                            // TODO: delete
-                          },
-                          icon: const Icon(Icons.delete),
-                        ),
-                      ],
                     )
                   : null,
             ),
@@ -192,4 +200,66 @@ class _UserPostState extends State<UserPost> {
       ),
     );
   }
+}
+
+void _showEditPostTab(BuildContext context, String postId, String postDes) {
+  showModalBottomSheet(
+    backgroundColor: Theme.of(context).colorScheme.primary,
+    context: context,
+    isScrollControlled: true,
+    builder: (BuildContext context) {
+      final TextEditingController textController =
+          TextEditingController(text: postDes);
+
+      return Padding(
+        padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16,
+            right: 16,
+            top: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: textController,
+              maxLines: 3,
+              decoration: InputDecoration(
+                hintText: 'Edit your post...',
+                filled: true,
+                fillColor: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey[100]
+                    : Theme.of(context).colorScheme.secondary,
+                border: InputBorder.none,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    // Save changes
+                    Provider.of<PostProvider>(context, listen: false)
+                        .updatePost(postId, textController.text);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Save Changes'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      );
+    },
+  );
 }

@@ -177,6 +177,7 @@ class AccountPage extends StatelessWidget {
                         itemCount: 5,
                         itemBuilder: (context, index) {
                           return UserPost(
+                            postId: "1",
                             isGoAccount: false,
                             userId: "1",
                             userImage: "assets/images/user.jpg",

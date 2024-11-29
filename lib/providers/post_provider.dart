@@ -98,4 +98,29 @@ class PostProvider with ChangeNotifier {
 
     return posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
   }
+
+  // delete post
+  Future<void> deletePost(String postId) async {
+    await FirebaseFirestore.instance.collection('posts').doc(postId).delete();
+    final cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME']!;
+    final apiKey = dotenv.env['CLOUDINARY_API_KEY']!;
+    final apiSecret = dotenv.env['CLOUDINARY_API_SECRET']!;
+    final cloudinary = Cloudinary.signedConfig(
+      cloudName: cloudName,
+      apiKey: apiKey,
+      apiSecret: apiSecret,
+    );
+
+    await cloudinary.destroy('posts/$postId');
+     
+    notifyListeners();
+  }
+
+  // update post
+  Future<void> updatePost(String postId, String title) async {
+    await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+      'title': title,
+    });
+    notifyListeners();
+  }
 }
