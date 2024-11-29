@@ -7,7 +7,7 @@ import 'package:test_app_flutter/models/post_model.dart';
 
 class PostProvider with ChangeNotifier {
   bool isLoading =false;
-  bool doneUpload =false;
+  
   // add new post to firestore
 
   Future<void> savePostToFirestore(File image, String uid, String title,
@@ -69,13 +69,13 @@ class PostProvider with ChangeNotifier {
           {'imageUrl': response.secureUrl},
         );
         isLoading = false;
-        doneUpload = true;
         notifyListeners();
       }
 
       // save data to firebase
     } catch (e) {
       debugPrint(e.toString());
+      isLoading = false;
       notifyListeners();
     }
   }
