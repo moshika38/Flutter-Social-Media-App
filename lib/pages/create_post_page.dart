@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
@@ -71,22 +70,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   _postController.text,
                                   0,
                                   0,
+                                  context,
                                 );
-                                context.pushNamed('home');
                               }
                             },
                             child: Row(
                               children: [
-                                postProvider.isLoading
-                                    ? SizedBox(
-                                        width: 25,
-                                        height: 25,
-                                        child: const CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : Icon(Icons.post_add),
-                                Text('Post'),
+                                Text(postProvider.isLoading
+                                    ? 'Uploading....'
+                                    : 'Upload'),
                               ],
                             ),
                           ),
@@ -96,7 +88,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                     body: SingleChildScrollView(
                       child: Padding(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Form(
                           key: _formKey,
                           child: Column(

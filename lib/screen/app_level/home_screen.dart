@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:test_app_flutter/models/post_model.dart';
+import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
+import 'package:test_app_flutter/providers/post_provider.dart';
+import 'package:test_app_flutter/providers/user_provider.dart';
+import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 import 'package:test_app_flutter/widget/post_bottom_app_bar.dart';
 
@@ -33,7 +39,6 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                       
                       child: GestureDetector(
                         onTap: () {
                           PostBottomAppBar().showPostBottomAppBar(context);
@@ -56,20 +61,52 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return const UserPost(
-                    isGoAccount: true,
-                    userId: "0",
-                    userImage: "assets/images/user.jpg",
-                    userName: "Jone Doe",
-                    postDes: "my first post",
-                    postImage: "assets/images/post.jpg",
-                    postTime: "3 hours ago",
-                    postLikes: "50k",
-                    postComments: "50",
+            Consumer2(
+              builder: (BuildContext context, PostProvider postProvider,
+                      UserProvider userProvider, Widget? child) =>
+                  FutureBuilder(
+                future: postProvider.getAllPosts(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: ProgressBar());
+                  }
+                  if (snapshot.hasData) {
+                    final posts = snapshot.data as List<PostModel>;
+
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          return FutureBuilder(
+                            future:
+                                userProvider.getUserById(posts[index].userId),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                final user = snapshot.data as UserModel;
+                                return UserPost(
+                                  isGoAccount: true,
+                                  userId: user.id,
+                                  userImage: user.profilePicture.toString(),
+                                  userName: user.name,
+                                  postDes: posts[index].title,
+                                  postImage: posts[index].imageUrl,
+                                  postTime: posts[index].createTime,
+                                  postLikes: posts[index].likeCount.toString(),
+                                  postComments:
+                                      posts[index].commentCount.toString(),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  }
+                  return const Center(
+                    child: Center(
+                      child: Text('No posts found'),
+                    ),
                   );
                 },
               ),

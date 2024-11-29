@@ -3,15 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudinary/cloudinary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/models/post_model.dart';
 
 class PostProvider with ChangeNotifier {
-  bool isLoading =false;
-  
+  bool isLoading = false;
+
   // add new post to firestore
 
   Future<void> savePostToFirestore(File image, String uid, String title,
-      int likeCount, int commentCount) async {
+      int likeCount, int commentCount, BuildContext context) async {
     isLoading = true;
     notifyListeners();
     try {
@@ -28,18 +29,21 @@ class PostProvider with ChangeNotifier {
       );
 
       await docRef.set(post.toJson());
-
-      // Upload image and update imageUrl
-      await uploadPost(image, docRef.id);
-
+      if (context.mounted) {
+        await uploadPost(image, docRef.id, context);
+      }
+      isLoading = false;
       notifyListeners();
     } catch (e) {
       debugPrint('Error saving post: $e');
+      isLoading = false;
+      notifyListeners();
     }
   }
 
   // save post to cloudinary
-  Future<void> uploadPost(File? image, String postId) async {
+  Future<void> uploadPost(
+      File? image, String postId, BuildContext context) async {
     if (image == null) {
       debugPrint('No image provided');
       return;
@@ -60,7 +64,7 @@ class PostProvider with ChangeNotifier {
         file: image.path,
         fileBytes: image.readAsBytesSync(),
         resourceType: CloudinaryResourceType.image,
-        folder: 'posts/$postId',
+        folder: 'posts',
         publicId: postId,
       );
 
@@ -69,6 +73,9 @@ class PostProvider with ChangeNotifier {
           {'imageUrl': response.secureUrl},
         );
         isLoading = false;
+        if (context.mounted) {
+          context.pushNamed('home');
+        }
         notifyListeners();
       }
 
@@ -76,7 +83,19 @@ class PostProvider with ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       isLoading = false;
+
       notifyListeners();
     }
+  }
+
+  // get all posts
+  Future<List<PostModel>> getAllPosts() async {
+    final posts = await FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy('createTime',
+            descending: true) // Order by createTime in descending order
+        .get();
+
+    return posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
   }
 }

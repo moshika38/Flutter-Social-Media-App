@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/pages/comment_page.dart';
@@ -31,7 +32,8 @@ class UserPost extends StatefulWidget {
 }
 
 class _UserPostState extends State<UserPost> {
-  bool isFav = false;
+  bool isLike = false;
+  bool isMoreIcon = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class _UserPostState extends State<UserPost> {
                   ),
                   child: CircleAvatar(
                     radius: widget.isGoAccount ? 20 : 15,
-                    backgroundImage: AssetImage(widget.userImage),
+                    backgroundImage: NetworkImage(widget.userImage),
                   ),
                 ),
               ),
@@ -70,13 +72,47 @@ class _UserPostState extends State<UserPost> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(
-                widget.postTime,
+                widget.postTime.split('T')[0],
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () {},
-              ),
+              trailing: widget.userId == FirebaseAuth.instance.currentUser!.uid
+                  ? IconButton(
+                      icon: Icon(isMoreIcon ? Icons.close : Icons.more_vert),
+                      onPressed: () {
+                        setState(() {
+                          isMoreIcon = !isMoreIcon;
+                        });
+                      },
+                    )
+                  : null,
+            ),
+          ),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: isMoreIcon ? 30 : 0,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 28),
+              child: isMoreIcon
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            // TODO: edite
+                          },
+                          icon: const Icon(Icons.edit),
+                        ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          onPressed: () {
+                            // TODO: delete
+                          },
+                          icon: const Icon(Icons.delete),
+                        ),
+                      ],
+                    )
+                  : null,
             ),
           ),
           Padding(
@@ -95,13 +131,12 @@ class _UserPostState extends State<UserPost> {
                 GestureDetector(
                   onDoubleTap: () {
                     setState(() {
-                      isFav = !isFav;
+                      isLike = !isLike;
                     });
                   },
-                  child: Image.asset(
+                  child: Image.network(
                     widget.postImage,
                     width: double.infinity,
-                    height: 200,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -114,12 +149,12 @@ class _UserPostState extends State<UserPost> {
                         children: [
                           IconButton(
                             icon: Icon(
-                              isFav ? Icons.favorite : Icons.favorite_border,
-                              color: isFav ? Colors.red : null,
+                              isLike ? Icons.favorite : Icons.favorite_border,
+                              color: isLike ? Colors.red : null,
                             ),
                             onPressed: () {
                               setState(() {
-                                isFav = !isFav;
+                                isLike = !isLike;
                               });
                             },
                           ),
