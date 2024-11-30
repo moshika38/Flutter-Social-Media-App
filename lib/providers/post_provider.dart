@@ -88,15 +88,16 @@ class PostProvider with ChangeNotifier {
     }
   }
 
- 
-
   // get user posts
   Future<List<PostModel>> getUserPosts(String userId) async {
     final posts = await FirebaseFirestore.instance
         .collection('posts')
         .where('userId', isEqualTo: userId)
         .get();
-    return posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
+    final data =
+        posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
+    data.sort((a, b) => b.createTime.compareTo(a.createTime));
+    return data;
   }
 
   // delete post
@@ -123,6 +124,7 @@ class PostProvider with ChangeNotifier {
   }
 
   // get all posts
+
   Stream<List<PostModel>> getAllPosts() async* {
     final posts = await FirebaseFirestore.instance
         .collection('posts')

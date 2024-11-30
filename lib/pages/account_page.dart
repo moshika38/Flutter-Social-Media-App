@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
- import 'package:test_app_flutter/utils/app_url.dart';
+import 'package:test_app_flutter/utils/app_url.dart';
 import 'package:test_app_flutter/widget/lost_connection.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
@@ -171,6 +171,7 @@ class AccountPage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    
                     Consumer<PostProvider>(
                       builder: (context, postProvider, child) => FutureBuilder(
                         future: postProvider.getUserPosts(uid),
@@ -181,10 +182,10 @@ class AccountPage extends StatelessWidget {
                           }
                           if (snapshot.hasData &&
                               (snapshot.data as List<PostModel>).isEmpty) {
-                            return Column(
+                            return const Column(
                               children: [
-                                const SizedBox(height: 50),
-                                const Text('No posts available yet !'),
+                                SizedBox(height: 50),
+                                Text('No posts available yet !'),
                               ],
                             );
                           }
@@ -211,7 +212,7 @@ class AccountPage extends StatelessWidget {
                               },
                             );
                           }
-                          return const Text('check your internet connection !');
+                          return const Text('Something went wrong !');
                         },
                       ),
                     ),

@@ -5,7 +5,7 @@ import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
- import 'package:test_app_flutter/widget/progress_bar.dart';
+import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 import 'package:test_app_flutter/widget/post_bottom_app_bar.dart';
 
@@ -80,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                   }
                   if (snapshot.hasData) {
                     final posts = snapshot.data as List<PostModel>;
-              
+
                     return Expanded(
                       child: ListView.builder(
                         physics: const BouncingScrollPhysics(),
