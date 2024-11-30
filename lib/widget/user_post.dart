@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:test_app_flutter/pages/comment_page.dart';
 import 'package:test_app_flutter/providers/comment_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
- 
+import 'package:test_app_flutter/widget/progress_bar.dart';
+
 class UserPost extends StatefulWidget {
   final String userImage;
   final String userName;
@@ -55,7 +56,9 @@ class _UserPostState extends State<UserPost> {
               padding: const EdgeInsets.only(right: 28),
               child: isMoreIcon
                   ? Consumer2<PostProvider, CommentProvider>(
-                      builder: (context, postProvider, commentProvider, child) => Row(
+                      builder:
+                          (context, postProvider, commentProvider, child) =>
+                              Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
@@ -147,7 +150,10 @@ class _UserPostState extends State<UserPost> {
                     widget.postImage,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(child: ProgressBar());
+                    },
                   ),
                 ),
                 Padding(
@@ -179,7 +185,8 @@ class _UserPostState extends State<UserPost> {
                           IconButton(
                             icon: const Icon(Icons.comment_outlined),
                             onPressed: () {
-                              CommentPage(postId: widget.postId).showCommentSheet(context);
+                              CommentPage(postId: widget.postId)
+                                  .showCommentSheet(context);
                             },
                           ),
                           Text(

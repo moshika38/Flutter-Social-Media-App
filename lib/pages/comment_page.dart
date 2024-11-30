@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/comment_model.dart';
 import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/providers/comment_provider.dart';
+import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 
 class CommentPage {
@@ -31,10 +32,11 @@ class CommentPage {
           maxChildSize: 0.95,
           expand: false,
           builder: (context, scrollController) {
-            return Consumer2<CommentProvider, UserProvider>(
-              builder: (context, commentProvider, userProvider, child) {
-                return StreamBuilder<List<CommentModel>>(
-                  stream: commentProvider.getComments(postId),
+            return Consumer3<CommentProvider, UserProvider, PostProvider>(
+              builder: (context, commentProvider, userProvider, postProvider,
+                  child) {
+                return FutureBuilder<List<CommentModel>>(
+                  future: commentProvider.getComments(postId),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final comments = snapshot.data!;
@@ -170,11 +172,17 @@ class CommentPage {
                                                                         .surface,
                                                                   ),
                                                                   onPressed:
-                                                                      () {
+                                                                      () async{
                                                                     // Handle delete
-                                                                    commentProvider
+                                                                    await commentProvider
                                                                         .deleteComment(
                                                                             comments[index].id);
+
+                                                                    // update count
+                                                                    await postProvider
+                                                                        .deleteCommentCount(
+                                                                            postId,
+                                                                            1);
                                                                   },
                                                                   padding:
                                                                       EdgeInsets
@@ -268,16 +276,16 @@ class CommentPage {
                                     ),
                                   ),
                                 ),
-                                StreamBuilder<UserModel?>(
-                                  stream: userProvider.getUserById(
+                                FutureBuilder<UserModel?>(
+                                  future: userProvider.getUserById(
                                       FirebaseAuth.instance.currentUser!.uid),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       final userData = snapshot.data!;
                                       return IconButton(
-                                        onPressed: () {
+                                        onPressed: () async{
                                           // add comment
-                                          commentProvider.saveComment(
+                                         await commentProvider.saveComment(
                                             postId,
                                             commentController.text,
                                             userData.id,
@@ -285,6 +293,10 @@ class CommentPage {
                                             userData.profilePicture.toString(),
                                           );
                                           commentController.clear();
+
+                                          // update count
+                                          await postProvider.addCommentCount(
+                                              postId, 1);
                                         },
                                         icon: Icon(
                                           Icons.send,

@@ -45,8 +45,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
     return Consumer2(
       builder: (BuildContext context, UserProvider userProvider,
               PostProvider postProvider, child) =>
-          StreamBuilder<UserModel?>(
-              stream: userProvider.getUserById(FirebaseAuth.instance.currentUser!.uid),
+          FutureBuilder<UserModel?>(
+              future: userProvider.getUserById(
+                  FirebaseAuth.instance.currentUser!.uid),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final userData = snapshot.data!;

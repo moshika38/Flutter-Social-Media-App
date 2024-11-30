@@ -229,17 +229,18 @@ class UserProvider extends ChangeNotifier {
   }
 
 // get user by id
-    Stream<UserModel?> getUserById(String uid) async* {
+    Future  <UserModel?> getUserById(String uid) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     try {
       DocumentSnapshot snapshot =
           await firestore.collection('users').doc(uid).get();
       if (snapshot.exists) {
-        yield UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
+        return UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
       }
     } catch (e) {
       print('Error fetching user data: $e');
     }
+    return null;
   }
 
 

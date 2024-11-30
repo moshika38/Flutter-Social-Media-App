@@ -23,7 +23,7 @@ class PostProvider with ChangeNotifier {
         title: title,
         imageUrl: '',
         likeCount: likeCount,
-         
+        commentCount: commentCount,
         createTime: DateTime.now().toIso8601String(),
         userId: uid,
       );
@@ -125,16 +125,29 @@ class PostProvider with ChangeNotifier {
 
   // get all posts
 
-  Stream<List<PostModel>> getAllPosts() async* {
+  Future<List<PostModel>> getAllPosts() async {
     final posts = await FirebaseFirestore.instance
         .collection('posts')
         .orderBy('createTime',
             descending: true) // Order by createTime in descending order
         .get();
 
-    yield posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
+    return posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
   }
 
+  // add comment count
+  Future<void> addCommentCount(String postId, int count) async {
+    await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+      'commentCount': FieldValue.increment(count),
+    });
+    notifyListeners();
+  }
 
-
+  // delete comment count
+  Future<void> deleteCommentCount(String postId, int count) async {
+    await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+      'commentCount': FieldValue.increment(-count),
+    });
+    notifyListeners();
+  }
 }

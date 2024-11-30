@@ -3,10 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
 import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
-import 'package:test_app_flutter/providers/comment_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
-import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 import 'package:test_app_flutter/widget/post_bottom_app_bar.dart';
 
@@ -15,6 +13,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScrollController scrollController = ScrollController();
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -62,20 +62,16 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Consumer3<PostProvider, UserProvider, CommentProvider>(
-              builder: (context, postProvider, userProvider, commentProvider,
-                      child) =>
-                  StreamBuilder(
-                stream: postProvider.getAllPosts(),
+            Consumer2<PostProvider, UserProvider>(
+              builder: (context, postProvider, userProvider, child) =>
+                  FutureBuilder(
+                future: postProvider.getAllPosts(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: ProgressBar());
-                  }
                   if (snapshot.hasData && snapshot.data!.isEmpty) {
                     return const Center(
                       child: Column(
                         children: [
-                          Text('No posts available yet !'),
+                          Text('No posts available yet!'),
                         ],
                       ),
                     );
@@ -85,35 +81,29 @@ class HomeScreen extends StatelessWidget {
 
                     return Expanded(
                       child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
+                        controller:
+                            scrollController, // Attach the controller here
+                        physics: const AlwaysScrollableScrollPhysics(),
                         itemCount: posts.length,
                         itemBuilder: (context, index) {
-                          return StreamBuilder(
-                            stream:
+                          return FutureBuilder(
+                            future:
                                 userProvider.getUserById(posts[index].userId),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 final user = snapshot.data as UserModel;
-                                return FutureBuilder<int>(
-                                  future: commentProvider
-                                      .getCommentCount(posts[index].id),
-                                  builder: (context, commentSnapshot) {
-                                    return UserPost(
-                                      postId: posts[index].id,
-                                      isGoAccount: true,
-                                      userId: user.id,
-                                      userImage: user.profilePicture.toString(),
-                                      userName: user.name,
-                                      postDes: posts[index].title,
-                                      postImage: posts[index].imageUrl,
-                                      postTime: posts[index].createTime,
-                                      postLikes:
-                                          posts[index].likeCount.toString(),
-                                      postComments:
-                                          commentSnapshot.data?.toString() ??
-                                              '0',
-                                    );
-                                  },
+                                return UserPost(
+                                  postId: posts[index].id,
+                                  isGoAccount: true,
+                                  userId: user.id,
+                                  userImage: user.profilePicture.toString(),
+                                  userName: user.name,
+                                  postDes: posts[index].title,
+                                  postImage: posts[index].imageUrl,
+                                  postTime: posts[index].createTime,
+                                  postLikes: posts[index].likeCount.toString(),
+                                  postComments:
+                                      posts[index].commentCount.toString(),
                                 );
                               }
                               return const SizedBox.shrink();
@@ -125,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                   }
                   return const Center(
                     child: Center(
-                      child: Text('No posts found'),
+                      child: Text('Loading...'),
                     ),
                   );
                 },

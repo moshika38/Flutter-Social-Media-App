@@ -26,8 +26,9 @@ class SettingsScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: StreamBuilder<UserModel?>(
-              stream: userProvider.getUserById(FirebaseAuth.instance.currentUser!.uid),
+            child: FutureBuilder<UserModel?>(
+              future: userProvider.getUserById(
+                  FirebaseAuth.instance.currentUser!.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const ProgressBar();

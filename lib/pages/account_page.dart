@@ -1,16 +1,16 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
-import 'package:test_app_flutter/providers/comment_provider.dart';
+import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
 import 'package:test_app_flutter/widget/lost_connection.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
+import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 
 class AccountPage extends StatelessWidget {
@@ -29,18 +29,13 @@ class AccountPage extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
-          IconButton(
-            icon: Icon(Theme.of(context).brightness == Brightness.dark
-                ? Icons.light_mode_outlined
-                : Icons.dark_mode_outlined),
-            onPressed: () {},
-          ),
+          ToggleThemeBtn(),
         ],
       ),
       body: SingleChildScrollView(
         child: Consumer<UserProvider>(
-          builder: (context, userProvider, child) => StreamBuilder(
-            stream: userProvider.getUserById(uid),
+          builder: (context, userProvider, child) => FutureBuilder<UserModel?>(
+            future: userProvider.getUserById(uid),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const ProgressBar();
@@ -161,26 +156,97 @@ class AccountPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           if (!isCurrentUser)
-                            ElevatedButton.icon(
-                              onPressed: () {},
-                              icon: const Icon(Icons.message_outlined),
-                              label: const Text('Send Message'),
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(200, 40),
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 150,
+                                  height: 45,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(25),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.person_add_rounded,
+                                        color: Colors.white),
+                                    label: const Text(
+                                      'Follow',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Container(
+                                  width: 150,
+                                  height: 45,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(25),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.chat_bubble_outline_rounded,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                    label: Text(
+                                      'Message',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                         ],
                       ),
                     ),
-                    
-                    Consumer2<PostProvider, CommentProvider>(
-                      builder: (context, postProvider, commentProvider, child) => FutureBuilder(
+                    Consumer<PostProvider>(
+                      builder: (context, postProvider, child) => FutureBuilder(
                         future: postProvider.getUserPosts(uid),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(child: ProgressBar());
-                          }
                           if (snapshot.hasData &&
                               (snapshot.data as List<PostModel>).isEmpty) {
                             return const Column(
@@ -197,27 +263,23 @@ class AccountPage extends StatelessWidget {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: posts.length,
                               itemBuilder: (context, index) {
-                                return FutureBuilder<int>(
-                                  future: commentProvider.getCommentCount(posts[index].id),
-                                  builder: (context, commentSnapshot) {
-                                    return UserPost(
-                                      postId: posts[index].id,
-                                      isGoAccount: false,
-                                      userId: posts[index].userId,
-                                      userImage: user.profilePicture.toString(),
-                                      userName: user.name,
-                                      postDes: posts[index].title,
-                                      postImage: posts[index].imageUrl,
-                                      postTime: posts[index].createTime,
-                                      postLikes: posts[index].likeCount.toString(),
-                                      postComments: commentSnapshot.data?.toString() ?? '0',
-                                    );
-                                  }
+                                return UserPost(
+                                  postId: posts[index].id,
+                                  isGoAccount: false,
+                                  userId: posts[index].userId,
+                                  userImage: user.profilePicture.toString(),
+                                  userName: user.name,
+                                  postDes: posts[index].title,
+                                  postImage: posts[index].imageUrl,
+                                  postTime: posts[index].createTime,
+                                  postLikes: posts[index].likeCount.toString(),
+                                  postComments:
+                                      posts[index].commentCount.toString(),
                                 );
                               },
                             );
                           }
-                          return const Text('Something went wrong !');
+                          return const Text('Loading...');
                         },
                       ),
                     ),
