@@ -23,7 +23,7 @@ class PostProvider with ChangeNotifier {
         title: title,
         imageUrl: '',
         likeCount: likeCount,
-        commentCount: commentCount,
+         
         createTime: DateTime.now().toIso8601String(),
         userId: uid,
       );
@@ -134,4 +134,7 @@ class PostProvider with ChangeNotifier {
 
     yield posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
   }
+
+
+
 }

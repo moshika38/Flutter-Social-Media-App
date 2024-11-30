@@ -3,7 +3,6 @@ class PostModel {
   final String title;
   final String imageUrl;
   final int? likeCount;
-  final int? commentCount;
   final String createTime;
   final String userId;
 
@@ -12,7 +11,6 @@ class PostModel {
     required this.title,
     required this.imageUrl,
     this.likeCount,
-    this.commentCount,
     required this.createTime,
     required this.userId,
   });
@@ -23,7 +21,6 @@ class PostModel {
       title: json['title'] as String,
       imageUrl: json['imageUrl'] as String,
       likeCount: json['likeCount'] as int?,
-      commentCount: json['commentCount'] as int?,
       createTime: json['createTime'] as String,
       userId: json['userId'] as String,
     );
@@ -35,7 +32,6 @@ class PostModel {
       'title': title,
       'imageUrl': imageUrl,
       'likeCount': likeCount,
-      'commentCount': commentCount,
       'createTime': createTime,
       'userId': userId,
     };

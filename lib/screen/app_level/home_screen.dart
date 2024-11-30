@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
 import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
+import 'package:test_app_flutter/providers/comment_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
@@ -61,8 +62,9 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Consumer2<PostProvider, UserProvider>(
-              builder: (context, postProvider, userProvider, child) =>
+            Consumer3<PostProvider, UserProvider, CommentProvider>(
+              builder: (context, postProvider, userProvider, commentProvider,
+                      child) =>
                   StreamBuilder(
                 stream: postProvider.getAllPosts(),
                 builder: (context, snapshot) {
@@ -92,18 +94,26 @@ class HomeScreen extends StatelessWidget {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 final user = snapshot.data as UserModel;
-                                return UserPost(
-                                  postId: posts[index].id,
-                                  isGoAccount: true,
-                                  userId: user.id,
-                                  userImage: user.profilePicture.toString(),
-                                  userName: user.name,
-                                  postDes: posts[index].title,
-                                  postImage: posts[index].imageUrl,
-                                  postTime: posts[index].createTime,
-                                  postLikes: posts[index].likeCount.toString(),
-                                  postComments:
-                                      posts[index].commentCount.toString(),
+                                return FutureBuilder<int>(
+                                  future: commentProvider
+                                      .getCommentCount(posts[index].id),
+                                  builder: (context, commentSnapshot) {
+                                    return UserPost(
+                                      postId: posts[index].id,
+                                      isGoAccount: true,
+                                      userId: user.id,
+                                      userImage: user.profilePicture.toString(),
+                                      userName: user.name,
+                                      postDes: posts[index].title,
+                                      postImage: posts[index].imageUrl,
+                                      postTime: posts[index].createTime,
+                                      postLikes:
+                                          posts[index].likeCount.toString(),
+                                      postComments:
+                                          commentSnapshot.data?.toString() ??
+                                              '0',
+                                    );
+                                  },
                                 );
                               }
                               return const SizedBox.shrink();

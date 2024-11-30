@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
+import 'package:test_app_flutter/providers/comment_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
@@ -172,8 +173,8 @@ class AccountPage extends StatelessWidget {
                       ),
                     ),
                     
-                    Consumer<PostProvider>(
-                      builder: (context, postProvider, child) => FutureBuilder(
+                    Consumer2<PostProvider, CommentProvider>(
+                      builder: (context, postProvider, commentProvider, child) => FutureBuilder(
                         future: postProvider.getUserPosts(uid),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
@@ -196,18 +197,22 @@ class AccountPage extends StatelessWidget {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: posts.length,
                               itemBuilder: (context, index) {
-                                return UserPost(
-                                  postId: posts[index].id,
-                                  isGoAccount: false,
-                                  userId: posts[index].userId,
-                                  userImage: user.profilePicture.toString(),
-                                  userName: user.name,
-                                  postDes: posts[index].title,
-                                  postImage: posts[index].imageUrl,
-                                  postTime: posts[index].createTime,
-                                  postLikes: posts[index].likeCount.toString(),
-                                  postComments:
-                                      posts[index].commentCount.toString(),
+                                return FutureBuilder<int>(
+                                  future: commentProvider.getCommentCount(posts[index].id),
+                                  builder: (context, commentSnapshot) {
+                                    return UserPost(
+                                      postId: posts[index].id,
+                                      isGoAccount: false,
+                                      userId: posts[index].userId,
+                                      userImage: user.profilePicture.toString(),
+                                      userName: user.name,
+                                      postDes: posts[index].title,
+                                      postImage: posts[index].imageUrl,
+                                      postTime: posts[index].createTime,
+                                      postLikes: posts[index].likeCount.toString(),
+                                      postComments: commentSnapshot.data?.toString() ?? '0',
+                                    );
+                                  }
                                 );
                               },
                             );

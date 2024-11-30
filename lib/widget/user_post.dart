@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/pages/comment_page.dart';
+import 'package:test_app_flutter/providers/comment_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
  
 class UserPost extends StatefulWidget {
@@ -53,8 +54,8 @@ class _UserPostState extends State<UserPost> {
             child: Padding(
               padding: const EdgeInsets.only(right: 28),
               child: isMoreIcon
-                  ? Consumer<PostProvider>(
-                      builder: (context, postProvider, child) => Row(
+                  ? Consumer2<PostProvider, CommentProvider>(
+                      builder: (context, postProvider, commentProvider, child) => Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
@@ -178,7 +179,7 @@ class _UserPostState extends State<UserPost> {
                           IconButton(
                             icon: const Icon(Icons.comment_outlined),
                             onPressed: () {
-                              CommentPage().showCommentSheet(context);
+                              CommentPage(postId: widget.postId).showCommentSheet(context);
                             },
                           ),
                           Text(
