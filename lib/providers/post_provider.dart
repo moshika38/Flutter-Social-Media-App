@@ -88,14 +88,14 @@ class PostProvider with ChangeNotifier {
     }
   }
 
-  // get all posts
-  Future<List<PostModel>> getAllPosts() async {
+ 
+
+  // get user posts
+  Future<List<PostModel>> getUserPosts(String userId) async {
     final posts = await FirebaseFirestore.instance
         .collection('posts')
-        .orderBy('createTime',
-            descending: true) // Order by createTime in descending order
+        .where('userId', isEqualTo: userId)
         .get();
-
     return posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
   }
 
@@ -110,17 +110,26 @@ class PostProvider with ChangeNotifier {
       apiKey: apiKey,
       apiSecret: apiSecret,
     );
-
     await cloudinary.destroy('posts/$postId');
-     
     notifyListeners();
   }
 
-  // update post
+  // update post description
   Future<void> updatePost(String postId, String title) async {
     await FirebaseFirestore.instance.collection('posts').doc(postId).update({
       'title': title,
     });
     notifyListeners();
+  }
+
+  // get all posts
+  Stream<List<PostModel>> getAllPosts() async* {
+    final posts = await FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy('createTime',
+            descending: true) // Order by createTime in descending order
+        .get();
+
+    yield posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
   }
 }

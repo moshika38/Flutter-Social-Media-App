@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/pages/comment_page.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
+import 'package:test_app_flutter/widget/progress_bar.dart';
 
 class UserPost extends StatefulWidget {
   final String userImage;
@@ -146,6 +147,12 @@ class _UserPostState extends State<UserPost> {
                     widget.postImage,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return const Center(child: ProgressBar());
+                    },
                   ),
                 ),
                 Padding(

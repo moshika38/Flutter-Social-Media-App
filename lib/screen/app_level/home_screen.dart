@@ -5,7 +5,7 @@ import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
-import 'package:test_app_flutter/widget/progress_bar.dart';
+ import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 import 'package:test_app_flutter/widget/post_bottom_app_bar.dart';
 
@@ -61,17 +61,16 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Consumer2(
-              builder: (BuildContext context, PostProvider postProvider,
-                      UserProvider userProvider, Widget? child) =>
-                  FutureBuilder(
-                future: postProvider.getAllPosts(),
+            Consumer2<PostProvider, UserProvider>(
+              builder: (context, postProvider, userProvider, child) =>
+                  StreamBuilder(
+                stream: postProvider.getAllPosts(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: ProgressBar());
                   }
                   if (snapshot.hasData && snapshot.data!.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Column(
                         children: [
                           Text('No posts available yet !'),
@@ -81,13 +80,14 @@ class HomeScreen extends StatelessWidget {
                   }
                   if (snapshot.hasData) {
                     final posts = snapshot.data as List<PostModel>;
-
+              
                     return Expanded(
                       child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
                         itemCount: posts.length,
                         itemBuilder: (context, index) {
-                          return FutureBuilder(
-                            future:
+                          return StreamBuilder(
+                            stream:
                                 userProvider.getUserById(posts[index].userId),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {

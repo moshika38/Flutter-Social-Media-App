@@ -115,7 +115,6 @@ class UserProvider extends ChangeNotifier {
   }
 
   // google login
-
   Future<void> signInWithGoogle(BuildContext context) async {
     isLoading = true;
     notifyListeners();
@@ -212,7 +211,7 @@ class UserProvider extends ChangeNotifier {
           email: FirebaseAuth.instance.currentUser!.email!,
           name: displayName ??
               FirebaseAuth.instance.currentUser!.displayName ??
-              "",
+              "Guest",
           profilePicture: FirebaseAuth.instance.currentUser!.photoURL ?? '',
           followers: [],
           following: [],
@@ -229,20 +228,20 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  // get current user profile data
-  Future<UserModel?> getUserById(String uid) async {
+// get user by id
+    Stream<UserModel?> getUserById(String uid) async* {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     try {
       DocumentSnapshot snapshot =
           await firestore.collection('users').doc(uid).get();
       if (snapshot.exists) {
-        return UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
+        yield UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
       }
     } catch (e) {
       print('Error fetching user data: $e');
     }
-    return null;
   }
+
 
   // update user name
   Future<void> updateUserName(String uid, String name) async {
