@@ -189,7 +189,7 @@ class _AccountPageState extends State<AccountPage> {
                               ),
                               _buildStatColumn(
                                   context,
-                                  user.followers!.length.toString(),
+                                  user.followers.length.toString(),
                                   'Followers'),
                               Container(
                                 height: 40,
@@ -198,7 +198,7 @@ class _AccountPageState extends State<AccountPage> {
                               ),
                               _buildStatColumn(
                                   context,
-                                  user.following!.length.toString(),
+                                  user.following.length.toString(),
                                   'Following'),
                             ],
                           ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:test_app_flutter/models/story_model.dart';
 import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/widget/snack_bars.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -217,6 +218,7 @@ class UserProvider extends ChangeNotifier {
           profilePicture: FirebaseAuth.instance.currentUser!.photoURL ?? '',
           followers: [],
           following: [],
+          stories: [],
         );
         await FirebaseFirestore.instance
             .collection('users')
@@ -331,15 +333,16 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-
-
 // add follow list to user
   Future<void> followUser(
       String uid, List<String> followUserID, String followUserId) async {
     await FirebaseFirestore.instance.collection('users').doc(uid).update({
       'following': FieldValue.arrayUnion(followUserID),
     });
-    await FirebaseFirestore.instance.collection('users').doc(followUserId).update({
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(followUserId)
+        .update({
       'followers': FieldValue.arrayUnion([uid]),
     });
     notifyListeners();
@@ -350,15 +353,16 @@ class UserProvider extends ChangeNotifier {
     await FirebaseFirestore.instance.collection('users').doc(uid).update({
       'following': FieldValue.arrayRemove([followUserId]),
     });
-    await FirebaseFirestore.instance.collection('users').doc(followUserId).update({
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(followUserId)
+        .update({
       'followers': FieldValue.arrayRemove([uid]),
     });
     notifyListeners();
   }
 
-
-
-  // check if use follow or not 
+  // check if use follow or not
   Future<bool> checkUserFollowingOrNot(String uid, String checkUserId) async {
     try {
       DocumentSnapshot snapshot =
@@ -370,52 +374,165 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-
-
   // get current user follow list
   Future<List<UserModel>> getCurrentUserFollowing() async {
-     final user = FirebaseAuth.instance.currentUser;
-     try {
-        DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
-        final data = snapshot.data() as Map<String, dynamic>;
-        final followerIds = (data['following'] as List).cast<String>();
-        
-        if (followerIds.isEmpty) {
-          return [];
-        }
-        
-        final followerUsers = await Future.wait(
-          followerIds.map((id) => FirebaseFirestore.instance.collection('users').doc(id).get())
-        );
+    final user = FirebaseAuth.instance.currentUser;
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
+      final data = snapshot.data() as Map<String, dynamic>;
+      final followerIds = (data['following'] as List).cast<String>();
 
-        return followerUsers.map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          return UserModel.fromJson(data);
-        }).toList();
-     } catch (e) {
-       return [];
-     }
+      if (followerIds.isEmpty) {
+        return [];
+      }
+
+      final followerUsers = await Future.wait(followerIds.map((id) =>
+          FirebaseFirestore.instance.collection('users').doc(id).get()));
+
+      return followerUsers.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return UserModel.fromJson(data);
+      }).toList();
+    } catch (e) {
+      return [];
+    }
   }
-
 
   // get current user followers list
   Future<List<UserModel>> getCurrentUserFollowers() async {
     final user = FirebaseAuth.instance.currentUser;
-     
-        DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
-        final data = snapshot.data() as Map<String, dynamic>;
-        final followerIds = (data['followers'] as List).cast<String>();
-        
-        final followerUsers = await Future.wait(
-          followerIds.map((id) => FirebaseFirestore.instance.collection('users').doc(id).get())
-        );
 
-        return followerUsers.map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          return UserModel.fromJson(data);
-        }).toList();
-     
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
+    final data = snapshot.data() as Map<String, dynamic>;
+    final followerIds = (data['followers'] as List).cast<String>();
+
+    final followerUsers = await Future.wait(followerIds.map(
+        (id) => FirebaseFirestore.instance.collection('users').doc(id).get()));
+
+    return followerUsers.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return UserModel.fromJson(data);
+    }).toList();
   }
 
+  // create story collection
 
+  bool isUploadStory = false;
+
+  Future<void> createStoryCollection(
+      String uid,
+      File? image,
+      String userName,
+      String userProfile,
+      String uploadTime,
+      String userId,
+      BuildContext context) async {
+    isUploadStory = true;
+    notifyListeners();
+    try {
+      final docRef = FirebaseFirestore.instance.collection('stories').doc();
+
+      final story = StoryModel(
+        id: docRef.id,
+        imageUrl: '',
+        userName: userName,
+        userProfile: userProfile,
+        uploadTime: uploadTime,
+        userId: userId,
+      );
+
+      await docRef.set(story.toJson());
+      if (context.mounted) {
+        await uploadStoryImage(image, docRef.id, uid, context);
+      }
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error saving post: $e');
+      isUploadStory = false;
+      notifyListeners();
+    }
+    await FirebaseFirestore.instance.collection('stories').doc(uid).set({});
+  }
+
+  Future<void> uploadStoryImage(
+      File? image, String storyId, String uid, BuildContext context) async {
+    if (image == null) {
+      debugPrint('No image provided');
+      return;
+    }
+
+    final cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME']!;
+    final apiKey = dotenv.env['CLOUDINARY_API_KEY']!;
+    final apiSecret = dotenv.env['CLOUDINARY_API_SECRET']!;
+
+    final cloudinary = Cloudinary.signedConfig(
+      cloudName: cloudName,
+      apiKey: apiKey,
+      apiSecret: apiSecret,
+    );
+
+    try {
+      final response = await cloudinary.upload(
+        file: image.path,
+        fileBytes: image.readAsBytesSync(),
+        resourceType: CloudinaryResourceType.image,
+        folder: 'stories',
+        publicId: storyId,
+      );
+
+      if (response.statusCode == 200) {
+        await FirebaseFirestore.instance.collection('users').doc(uid).update({
+          'stories': FieldValue.arrayUnion([storyId]),
+        });
+
+        isUploadStory = false;
+        if (context.mounted) {
+          context.pop();
+        }
+        notifyListeners();
+      }
+
+      // save data to firebase
+    } catch (e) {
+      debugPrint(e.toString());
+      isUploadStory = false;
+
+      notifyListeners();
+    }
+  }
+
+  // check followers story available or not
+  Future<List<UserModel>> checkFollowersStoryAvailableOrNot() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
+    final data = snapshot.data() as Map<String, dynamic>;
+    final followerIds = (data['following'] as List).cast<String>();
+
+    final followerUsers = await Future.wait(followerIds.map(
+        (id) => FirebaseFirestore.instance.collection('users').doc(id).get()));
+
+    return followerUsers
+        .map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>))
+        .where((user) => user.stories.isNotEmpty)
+        .toList();
+  }
+
+  // return story by storyId
+  Future<StoryModel?> getStoryByStoryId(String storyId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('stories')
+        .doc(storyId)
+        .get();
+    return StoryModel.fromJson(snapshot.data() as Map<String, dynamic>);
+  }
 }

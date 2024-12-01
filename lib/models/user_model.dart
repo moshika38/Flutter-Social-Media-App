@@ -3,35 +3,29 @@ class UserModel {
   final String name;
   final String email;
   final String? profilePicture;
-  final List<String>? followers;
-  final List<String>? following;
-  final List<String>? likedPost;
+  final List<String> followers;
+  final List<String> following;
+  final List<String> stories;
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
     this.profilePicture,
-    this.followers,
-    this.following,
-    this.likedPost,
+    required this.followers,
+    required this.following,
+    this.stories = const [],
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
       profilePicture: json['profilePicture'],
-      followers: json['followers'] != null 
-          ? List<String>.from(json['followers'])
-          : null,
-      following: json['following'] != null
-          ? List<String>.from(json['following']) 
-          : null,
-      likedPost: json['likedPost'] != null
-          ? List<String>.from(json['likedPost'])
-          : null,
+      followers: List<String>.from(json['followers'] ?? []),
+      following: List<String>.from(json['following'] ?? []),
+      stories: List<String>.from(json['stories'] ?? []),
     );
   }
 
@@ -43,7 +37,7 @@ class UserModel {
       'profilePicture': profilePicture,
       'followers': followers,
       'following': following,
-      'likedPost': likedPost,
+      'stories': stories,
     };
   }
 }

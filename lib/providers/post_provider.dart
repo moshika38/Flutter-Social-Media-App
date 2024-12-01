@@ -10,7 +10,6 @@ class PostProvider with ChangeNotifier {
   bool isLoading = false;
 
   // add new post to firestore
-
   Future<void> savePostToFirestore(File image, String uid, String title,
       int likeCount, int commentCount, BuildContext context) async {
     isLoading = true;
