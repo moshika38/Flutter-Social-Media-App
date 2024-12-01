@@ -52,7 +52,8 @@ class HomeScreen extends StatelessWidget {
                         8,
                         (index) => GestureDetector(
                           onTap: () {
-                            StoryViewPage().showStoryView(context, false);
+                            StoryViewPage(imageList: [])
+                                .showStoryView(context);
                           },
                           child: const UserStoryCard(),
                         ),
@@ -187,7 +188,7 @@ class CreatePostBtn extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            StoryViewPage().showStoryView(context, true);
+            StoryViewPage(imageList: []).showStoryView(context);
           },
           child: Container(
             width: 70, // Increased size

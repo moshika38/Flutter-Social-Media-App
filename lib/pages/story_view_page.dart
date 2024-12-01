@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 
 class StoryViewPage {
-  
+  final List<String> imageList;
 
-  void showStoryView(BuildContext context, bool isDefault) {
-    List<String> imageList = [
-      "assets/images/sample.jpg",
-      "assets/images/friends.jpg",
-      "assets/images/post.jpg",
-    ];
-    List<String> defaultImageList = [
-      "assets/images/friends.jpg",
-      "assets/images/chat.jpg",
-      "assets/images/shair.jpg",
-    ];
+  StoryViewPage({
+    required this.imageList,
+  });
 
+  void showStoryView(BuildContext context) {
+    print("image is $imageList");
     int currentStoryIndex = 0;
 
     showModalBottomSheet(
@@ -35,7 +29,6 @@ class StoryViewPage {
               builder: (context, setState) {
                 return Stack(
                   children: [
-                    // Story Image
                     GestureDetector(
                       onTapDown: (details) {
                         final screenWidth = MediaQuery.of(context).size.width;
@@ -48,10 +41,7 @@ class StoryViewPage {
                           }
                         } else {
                           // Right tap - go forward
-                          if (currentStoryIndex <
-                              (isDefault ? defaultImageList : imageList)
-                                      .length -
-                                  1) {
+                          if (currentStoryIndex < imageList.length - 1) {
                             setState(() {
                               currentStoryIndex++;
                             });
@@ -63,9 +53,7 @@ class StoryViewPage {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage((isDefault
-                                ? defaultImageList
-                                : imageList)[currentStoryIndex]),
+                            image: NetworkImage(imageList[currentStoryIndex]),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -138,7 +126,7 @@ class StoryViewPage {
                       right: 8,
                       child: Row(
                         children: List.generate(
-                          (isDefault ? defaultImageList : imageList).length,
+                          imageList.length,
                           (index) => Expanded(
                             child: Container(
                               height: 2,

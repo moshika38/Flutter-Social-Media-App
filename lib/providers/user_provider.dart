@@ -458,7 +458,7 @@ class UserProvider extends ChangeNotifier {
       isUploadStory = false;
       notifyListeners();
     }
-    await FirebaseFirestore.instance.collection('stories').doc(uid).set({});
+    // await FirebaseFirestore.instance.collection('stories').doc().set({});
   }
 
   Future<void> uploadStoryImage(
@@ -488,8 +488,14 @@ class UserProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
+        await FirebaseFirestore.instance
+            .collection('stories')
+            .doc(storyId)
+            .update({
+          'imageUrl': response.secureUrl,
+        });
         await FirebaseFirestore.instance.collection('users').doc(uid).update({
-          'stories': FieldValue.arrayUnion([storyId]),
+          'stories': FieldValue.arrayUnion([storyId])
         });
 
         isUploadStory = false;
@@ -527,12 +533,25 @@ class UserProvider extends ChangeNotifier {
         .toList();
   }
 
-  // return story by storyId
+  // return story model by storyId
   Future<StoryModel?> getStoryByStoryId(String storyId) async {
     final snapshot = await FirebaseFirestore.instance
         .collection('stories')
         .doc(storyId)
         .get();
     return StoryModel.fromJson(snapshot.data() as Map<String, dynamic>);
+  }
+
+  //return story imageUrls for given storyId list
+  Future<List<String>> getStoryImageUrlsByStoryIds(List<String> storyIds) async {
+    List<String> imageUrls = [];
+    for (String storyId in storyIds) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('stories')
+          .doc(storyId)
+          .get();
+      imageUrls.add(snapshot.data()!['imageUrl'] as String);
+    }
+    return imageUrls;
   }
 }

@@ -143,67 +143,74 @@ class _StoryScreenState extends State<StoryScreen> {
     );
   }
 
-  Widget _buildStoryItem(int index, List<UserModel> availableUserList, UserProvider userProvider) {
+  Widget _buildStoryItem(
+      int index, List<UserModel> availableUserList, UserProvider userProvider) {
     return FutureBuilder<StoryModel?>(
-      future: userProvider.getStoryByStoryId(availableUserList[index].stories[0]),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox();
-        
-        final story = snapshot.data!;
-        String date = "Not available";
+        future:
+            userProvider.getStoryByStoryId(availableUserList[index].stories[index]),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const SizedBox();
 
-        if (story.uploadTime.split("T")[0] != DateTime.now().toString().split("T")[0]) {
-          final DateTime uploadTime = DateTime.parse(story.uploadTime);
-          final Duration difference = DateTime.now().difference(uploadTime);
+          final story = snapshot.data!;
+          String date = "Not available";
 
-          if (difference.inMinutes < 60) {
-            date = "${difference.inMinutes} minutes ago";
-          } else if (difference.inHours < 24) {
-            date = "${difference.inHours} hours ago";
-          } else if (difference.inDays < 7) {
-            date = "${difference.inDays} days ago";
+          if (story.uploadTime.split("T")[0] !=
+              DateTime.now().toString().split("T")[0]) {
+            final DateTime uploadTime = DateTime.parse(story.uploadTime);
+            final Duration difference = DateTime.now().difference(uploadTime);
+
+            if (difference.inMinutes < 60) {
+              date = "${difference.inMinutes} minutes ago";
+            } else if (difference.inHours < 24) {
+              date = "${difference.inHours} hours ago";
+            } else if (difference.inDays < 7) {
+              date = "${difference.inDays} days ago";
+            } else {
+              date = "${uploadTime.day}/${uploadTime.month}/${uploadTime.year}";
+            }
           } else {
-            date = "${uploadTime.day}/${uploadTime.month}/${uploadTime.year}";
+            date =
+                "Today ${story.uploadTime.split("T")[1].split(":")[0]}:${story.uploadTime.split("T")[1].split(":")[1]}";
           }
-        } else {
-          date = "Today ${story.uploadTime.split("T")[1].split(":")[0]}:${story.uploadTime.split("T")[1].split(":")[1]}";
-        }
 
-        return GestureDetector(
-          onTap: () {
-            StoryViewPage().showStoryView(context, false);
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: ListTile(
-              leading: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.surface,
-                    width: 2,
+           
+          return GestureDetector(
+            onTap: () async {
+              final imageList = await userProvider
+                  .getStoryImageUrlsByStoryIds(availableUserList[index].stories);
+              if (!context.mounted) return;
+              StoryViewPage(imageList: imageList).showStoryView(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: ListTile(
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.surface,
+                      width: 2,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 28,
+                    backgroundImage: NetworkImage(
+                      availableUserList[index].profilePicture == ""
+                          ? AppUrl.baseUserUrl
+                          : availableUserList[index].profilePicture.toString(),
+                    ),
                   ),
                 ),
-                child: CircleAvatar(
-                  radius: 28,
-                  backgroundImage: NetworkImage(
-                    availableUserList[index].profilePicture == ""
-                        ? AppUrl.baseUserUrl
-                        : availableUserList[index].profilePicture.toString(),
-                  ),
+                title: Text(
+                  availableUserList[index].name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-              ),
-              title: Text(
-                availableUserList[index].name,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                date,
+                subtitle: Text(
+                  date,
+                ),
               ),
             ),
-          ),
-        );
-      }
-    );
+          );
+        });
   }
 }
