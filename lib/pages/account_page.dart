@@ -9,7 +9,6 @@ import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
 import 'package:test_app_flutter/widget/lost_connection.dart';
-import 'package:test_app_flutter/widget/progress_bar.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 
@@ -28,7 +27,7 @@ class AccountPage extends StatelessWidget {
           'Profile',
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        actions: [
+        actions: const [
           ToggleThemeBtn(),
         ],
       ),
@@ -37,10 +36,6 @@ class AccountPage extends StatelessWidget {
           builder: (context, userProvider, child) => FutureBuilder<UserModel?>(
             future: userProvider.getUserById(uid),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const ProgressBar();
-              }
-
               if (snapshot.hasData) {
                 final user = snapshot.data!;
                 bool isCurrentUser =

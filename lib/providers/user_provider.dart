@@ -45,7 +45,9 @@ class UserProvider extends ChangeNotifier {
       SnackBars().showSuccessSnackBar(context, 'Account created successfully');
       // navigate to login page
       if (FirebaseAuth.instance.currentUser != null) {
-        if (await createUserProfile(FirebaseAuth.instance.currentUser!.uid, uName) == true) {
+        if (await createUserProfile(
+                FirebaseAuth.instance.currentUser!.uid, uName) ==
+            true) {
           context.go('/home');
           notifyListeners();
         }
@@ -229,7 +231,7 @@ class UserProvider extends ChangeNotifier {
   }
 
 // get user by id
-    Future  <UserModel?> getUserById(String uid) async {
+  Future<UserModel?> getUserById(String uid) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     try {
       DocumentSnapshot snapshot =
@@ -242,7 +244,6 @@ class UserProvider extends ChangeNotifier {
     }
     return null;
   }
-
 
   // update user name
   Future<void> updateUserName(String uid, String name) async {
@@ -291,6 +292,41 @@ class UserProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       notifyListeners();
+    }
+  }
+
+  // add post to user's liked posts and update count
+  Future<void> updateUserLikePost(String uid, List<String> likedPost, String postId) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({'likedPost': FieldValue.arrayUnion(likedPost)});
+     await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+      'likeCount': FieldValue.increment(1),
+    });
+    notifyListeners();
+  }
+
+  // delete user like post and update count
+  Future<void> deleteUserLikePost(String uid, String postId) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'likedPost': FieldValue.arrayRemove([postId])
+    });
+    await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+      'likeCount': FieldValue.increment(-1),
+    });
+    notifyListeners();
+  }
+
+  // check if user like or not post
+  Future<bool> checkUserLikePost(String uid, String postId) async {
+    try {
+      DocumentSnapshot snapshot =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final data = snapshot.data() as Map<String, dynamic>;
+      return (data['likedPost'] as List).contains(postId);
+    } catch (e) {
+      return false;
     }
   }
 }

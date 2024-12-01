@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                       child: ListView.builder(
                         controller:
                             scrollController, // Attach the controller here
-                        physics: const AlwaysScrollableScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         itemCount: posts.length,
                         itemBuilder: (context, index) {
                           return FutureBuilder(

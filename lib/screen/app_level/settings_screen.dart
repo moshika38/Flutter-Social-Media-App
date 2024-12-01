@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/providers/theme_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
- import 'package:test_app_flutter/utils/app_url.dart';
+import 'package:test_app_flutter/utils/app_url.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -27,8 +27,8 @@ class SettingsScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: FutureBuilder<UserModel?>(
-              future: userProvider.getUserById(
-                  FirebaseAuth.instance.currentUser!.uid),
+              future: userProvider
+                  .getUserById(FirebaseAuth.instance.currentUser!.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const ProgressBar();
@@ -171,11 +171,18 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ],
                   );
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return const CircularProgressIndicator();
                 }
+                return TextButton.icon(
+                  onPressed: () {
+                    userProvider.signOut();
+                    context.go('/start');
+                  },
+                  icon: const Icon(Icons.logout),
+                  label: const Text('Log Out'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                );
               },
             ),
           ),

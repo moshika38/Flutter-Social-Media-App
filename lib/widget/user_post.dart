@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:test_app_flutter/pages/comment_page.dart';
 import 'package:test_app_flutter/providers/comment_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
+import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
 
 class UserPost extends StatefulWidget {
@@ -40,6 +41,25 @@ class UserPost extends StatefulWidget {
 class _UserPostState extends State<UserPost> {
   bool isLike = false;
   bool isMoreIcon = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      userProvider
+          .checkUserLikePost(currentUser.uid, widget.postId)
+          .then((value) {
+        if (mounted) {
+          setState(() {
+            isLike = value;
+          });
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,80 +149,102 @@ class _UserPostState extends State<UserPost> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Text(
-                    widget.postDes,
-                    style: Theme.of(context).textTheme.bodyLarge,
+            child: Consumer2<UserProvider, PostProvider>(
+              builder: (context, userProvider, postProvider, child) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text(
+                      widget.postDes,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onDoubleTap: () {
-                    setState(() {
-                      isLike = !isLike;
-                    });
-                  },
-                  child: Image.network(
-                    widget.postImage,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return const Center(child: ProgressBar());
+                  GestureDetector(
+                    onDoubleTap: () async {
+                      if (isLike) {
+                        isLike = false;
+                        await userProvider.deleteUserLikePost(
+                            widget.userId, widget.postId);
+                        // await postProvider.deleteLikeCount(widget.postId, 1);
+                      } else {
+                        isLike = true;
+                        await userProvider.updateUserLikePost(
+                            widget.userId, [widget.postId], widget.postId);
+                        // await postProvider.addLikeCount(widget.postId, 1);
+                      }
                     },
+                    child: Image.network(
+                      widget.postImage,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(child: ProgressBar());
+                      },
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              isLike ? Icons.favorite : Icons.favorite_border,
-                              color: isLike ? Colors.red : null,
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                isLike ? Icons.favorite : Icons.favorite_border,
+                                color: isLike ? Colors.red : null,
+                              ),
+                              onPressed: () async {
+                                if (isLike) {
+                                  isLike = false;
+                                  await userProvider.deleteUserLikePost(
+                                      widget.userId, widget.postId);
+                                  // await postProvider.deleteLikeCount(
+                                  //     widget.postId, 1);
+                                } else {
+                                  isLike = true;
+                                  await userProvider.updateUserLikePost(
+                                      widget.userId,
+                                      [widget.postId],
+                                      widget.postId);
+                                  // await postProvider.addLikeCount(
+                                  //     widget.postId, 1);
+                                }
+                              },
                             ),
-                            onPressed: () {
-                              setState(() {
-                                isLike = !isLike;
-                              });
-                            },
-                          ),
-                          Text(
-                            widget.postLikes,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.comment_outlined),
-                            onPressed: () {
-                              CommentPage(postId: widget.postId)
-                                  .showCommentSheet(context);
-                            },
-                          ),
-                          Text(
-                            widget.postComments,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.share_outlined),
-                        onPressed: () {},
-                      ),
-                    ],
+                            Text(
+                              widget.postLikes,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.comment_outlined),
+                              onPressed: () {
+                                CommentPage(postId: widget.postId)
+                                    .showCommentSheet(context);
+                              },
+                            ),
+                            Text(
+                              widget.postComments,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.share_outlined),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

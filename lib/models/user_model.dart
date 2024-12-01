@@ -5,6 +5,7 @@ class UserModel {
   final String? profilePicture;
   final List<String>? followers;
   final List<String>? following;
+  final List<String>? likedPost;
 
   UserModel({
     required this.id,
@@ -13,6 +14,7 @@ class UserModel {
     this.profilePicture,
     this.followers,
     this.following,
+    this.likedPost,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,9 @@ class UserModel {
       following: json['following'] != null
           ? List<String>.from(json['following']) 
           : null,
+      likedPost: json['likedPost'] != null
+          ? List<String>.from(json['likedPost'])
+          : null,
     );
   }
 
@@ -38,6 +43,7 @@ class UserModel {
       'profilePicture': profilePicture,
       'followers': followers,
       'following': following,
+      'likedPost': likedPost,
     };
   }
 }
