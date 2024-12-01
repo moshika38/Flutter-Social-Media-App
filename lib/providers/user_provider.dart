@@ -296,12 +296,13 @@ class UserProvider extends ChangeNotifier {
   }
 
   // add post to user's liked posts and update count
-  Future<void> updateUserLikePost(String uid, List<String> likedPost, String postId) async {
+  Future<void> updateUserLikePost(
+      String uid, List<String> likedPost, String postId) async {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .update({'likedPost': FieldValue.arrayUnion(likedPost)});
-     await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+    await FirebaseFirestore.instance.collection('posts').doc(postId).update({
       'likeCount': FieldValue.increment(1),
     });
     notifyListeners();
@@ -329,4 +330,44 @@ class UserProvider extends ChangeNotifier {
       return false;
     }
   }
+
+// add follow list to user
+  Future<void> followUser(
+      String uid, List<String> followUserID, String followUserId) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'following': FieldValue.arrayUnion(followUserID),
+    });
+    await FirebaseFirestore.instance.collection('users').doc(followUserId).update({
+      'followers': FieldValue.arrayUnion([uid]),
+    });
+    notifyListeners();
+  }
+
+// delete follow list from user
+  Future<void> unFollowUser(String uid, String followUserId) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'following': FieldValue.arrayRemove([followUserId]),
+    });
+    await FirebaseFirestore.instance.collection('users').doc(followUserId).update({
+      'followers': FieldValue.arrayRemove([uid]),
+    });
+    notifyListeners();
+  }
+
+
+
+  // check if use follow or not 
+  Future<bool> checkUserFollowingOrNot(String uid, String checkUserId) async {
+    try {
+      DocumentSnapshot snapshot =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final data = snapshot.data() as Map<String, dynamic>;
+      return (data['following'] as List).contains(checkUserId);
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+
 }

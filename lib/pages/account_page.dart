@@ -8,11 +8,10 @@ import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
-import 'package:test_app_flutter/widget/lost_connection.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 import 'package:test_app_flutter/widget/user_post.dart';
 
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   final String uid;
   const AccountPage({
     super.key,
@@ -20,7 +19,61 @@ class AccountPage extends StatelessWidget {
   });
 
   @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
+  bool isFollowing = false;
+  String postCount = "0";
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.uid.isEmpty) {
+      print('Warning: Empty UID provided to AccountPage');
+      return;
+    }
+
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final postProvider = Provider.of<PostProvider>(context, listen: false);
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    postProvider.getUserPosts(widget.uid).then((value2) {
+      if (mounted) {
+        setState(() {
+          postCount = value2.length.toString();
+        });
+      }
+    });
+    if (currentUser != null) {
+      userProvider
+          .checkUserFollowingOrNot(currentUser.uid, widget.uid)
+          .then((value) {
+        if (mounted) {
+          setState(() {
+            isFollowing = value;
+          });
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (widget.uid.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Profile',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        body: const Center(
+          child: Text('Invalid user profile'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -34,12 +87,12 @@ class AccountPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Consumer<UserProvider>(
           builder: (context, userProvider, child) => FutureBuilder<UserModel?>(
-            future: userProvider.getUserById(uid),
+            future: userProvider.getUserById(widget.uid),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final user = snapshot.data!;
                 bool isCurrentUser =
-                    uid == FirebaseAuth.instance.currentUser!.uid
+                    widget.uid == FirebaseAuth.instance.currentUser!.uid
                         ? true
                         : false;
                 return Column(
@@ -83,7 +136,7 @@ class AccountPage extends StatelessWidget {
                                     onPressed: () {
                                       _buildEditProfilePictureDialog(
                                         context,
-                                        uid,
+                                        widget.uid,
                                         userProvider,
                                       );
                                     },
@@ -112,7 +165,7 @@ class AccountPage extends StatelessWidget {
                                     _buildEditNameDialog(
                                       context,
                                       user.name,
-                                      uid,
+                                      widget.uid,
                                       userProvider,
                                     );
                                   },
@@ -128,7 +181,7 @@ class AccountPage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              _buildStatColumn(context, '150', 'Posts'),
+                              _buildStatColumn(context, postCount, 'Posts'),
                               Container(
                                 height: 40,
                                 width: 1,
@@ -173,12 +226,27 @@ class AccountPage extends StatelessWidget {
                                     ],
                                   ),
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      if (isFollowing) {
+                                        isFollowing = false;
+                                        userProvider.unFollowUser(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                            widget.uid);
+                                      } else {
+                                        isFollowing = true;
+                                        userProvider.followUser(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                            [widget.uid],
+                                            widget.uid);
+                                      }
+                                    },
                                     icon: const Icon(Icons.person_add_rounded,
                                         color: Colors.white),
-                                    label: const Text(
-                                      'Follow',
-                                      style: TextStyle(
+                                    label: Text(
+                                      isFollowing ? 'UnFollow' : 'Follow',
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -240,7 +308,7 @@ class AccountPage extends StatelessWidget {
                     ),
                     Consumer<PostProvider>(
                       builder: (context, postProvider, child) => FutureBuilder(
-                        future: postProvider.getUserPosts(uid),
+                        future: postProvider.getUserPosts(widget.uid),
                         builder: (context, snapshot) {
                           if (snapshot.hasData &&
                               (snapshot.data as List<PostModel>).isEmpty) {
@@ -282,7 +350,7 @@ class AccountPage extends StatelessWidget {
                 );
               }
 
-              return const LostConnection();
+              return const Center(child: Text('Loading...'));
             },
           ),
         ),
