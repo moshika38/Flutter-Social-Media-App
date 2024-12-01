@@ -14,8 +14,8 @@ class SnackBars {
   void showSuccessSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: const TextStyle(color: Colors.white)),
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        content: Text(message, style:   TextStyle(color: Theme.of(context).colorScheme.primary)),
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
         behavior: SnackBarBehavior.floating,
       ),
     );

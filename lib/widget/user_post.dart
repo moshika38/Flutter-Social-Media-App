@@ -12,7 +12,7 @@ import 'package:test_app_flutter/widget/progress_bar.dart';
 class UserPost extends StatefulWidget {
   final String userImage;
   final String userName;
-  final String userId;
+  final String postPublishUserId;
   final String postTime;
   final String postDes;
   final String postImage;
@@ -25,7 +25,7 @@ class UserPost extends StatefulWidget {
     super.key,
     required this.userImage,
     required this.userName,
-    required this.userId,
+    required this.postPublishUserId,
     required this.postTime,
     required this.postDes,
     required this.postImage,
@@ -110,7 +110,7 @@ class _UserPostState extends State<UserPost> {
                 onTap: () {
                   (context).pushNamed(
                     'account',
-                    extra: widget.userId,
+                    extra: widget.postPublishUserId,
                   );
                 },
                 child: Container(
@@ -140,7 +140,8 @@ class _UserPostState extends State<UserPost> {
                 widget.postTime.split('T')[0],
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              trailing: widget.userId == FirebaseAuth.instance.currentUser!.uid
+              trailing: widget.postPublishUserId ==
+                      FirebaseAuth.instance.currentUser!.uid
                   ? IconButton(
                       icon: Icon(isMoreIcon ? Icons.close : Icons.more_vert),
                       onPressed: () {
@@ -169,15 +170,20 @@ class _UserPostState extends State<UserPost> {
                   GestureDetector(
                     onDoubleTap: () async {
                       if (isLike) {
-                        isLike = false;
+                        setState(() {
+                          isLike = false;
+                        });
                         await userProvider.deleteUserLikePost(
-                            widget.userId, widget.postId);
-                        // await postProvider.deleteLikeCount(widget.postId, 1);
+                            FirebaseAuth.instance.currentUser!.uid,
+                            widget.postId);
                       } else {
-                        isLike = true;
+                        setState(() {
+                          isLike = true;
+                        });
                         await userProvider.updateUserLikePost(
-                            widget.userId, [widget.postId], widget.postId);
-                        // await postProvider.addLikeCount(widget.postId, 1);
+                            FirebaseAuth.instance.currentUser!.uid,
+                            [widget.postId],
+                            widget.postId);
                       }
                     },
                     child: widget.postImage.isNotEmpty
@@ -211,19 +217,20 @@ class _UserPostState extends State<UserPost> {
                               ),
                               onPressed: () async {
                                 if (isLike) {
-                                  isLike = false;
+                                  setState(() {
+                                    isLike = false;
+                                  });
                                   await userProvider.deleteUserLikePost(
-                                      widget.userId, widget.postId);
-                                  // await postProvider.deleteLikeCount(
-                                  //     widget.postId, 1);
+                                      FirebaseAuth.instance.currentUser!.uid,
+                                      widget.postId);
                                 } else {
-                                  isLike = true;
+                                  setState(() {
+                                    isLike = true;
+                                  });
                                   await userProvider.updateUserLikePost(
-                                      widget.userId,
+                                      FirebaseAuth.instance.currentUser!.uid,
                                       [widget.postId],
                                       widget.postId);
-                                  // await postProvider.addLikeCount(
-                                  //     widget.postId, 1);
                                 }
                               },
                             ),

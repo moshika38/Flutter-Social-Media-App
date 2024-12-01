@@ -329,7 +329,7 @@ class _AccountPageState extends State<AccountPage> {
                                 return UserPost(
                                   postId: posts[index].id,
                                   isGoAccount: false,
-                                  userId: posts[index].userId,
+                                  postPublishUserId: posts[index].userId,
                                   userImage: user.profilePicture.toString(),
                                   userName: user.name,
                                   postDes: posts[index].title,

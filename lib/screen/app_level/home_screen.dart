@@ -95,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                                 return UserPost(
                                   postId: posts[index].id,
                                   isGoAccount: true,
-                                  userId: user.id,
+                                  postPublishUserId: user.id,
                                   userImage: user.profilePicture.toString(),
                                   userName: user.name,
                                   postDes: posts[index].title,

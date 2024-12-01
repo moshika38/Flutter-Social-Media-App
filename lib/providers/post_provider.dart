@@ -151,20 +151,19 @@ class PostProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // add like count
+  Future<void> addLikeCount(String postId, int count) async {
+    await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+      'likeCount': FieldValue.increment(count),
+    });
+    notifyListeners();
+  }
 
-  // // add like count
-  // Future<void> addLikeCount(String postId, int count) async {
-  //   await FirebaseFirestore.instance.collection('posts').doc(postId).update({
-  //     'likeCount': FieldValue.increment(count),
-  //   });
-  //   notifyListeners();
-  // }
-
-  // // delete like count
-  // Future<void> deleteLikeCount(String postId, int count) async {
-  //   await FirebaseFirestore.instance.collection('posts').doc(postId).update({
-  //     'likeCount': FieldValue.increment(-count),
-  //   });
-  //   notifyListeners();
-  // }
+  // delete like count
+  Future<void> deleteLikeCount(String postId, int count) async {
+    await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+      'likeCount': FieldValue.increment(-count),
+    });
+    notifyListeners();
+  }
 }
