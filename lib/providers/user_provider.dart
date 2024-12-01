@@ -331,6 +331,8 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+
+
 // add follow list to user
   Future<void> followUser(
       String uid, List<String> followUserID, String followUserId) async {
@@ -370,4 +372,48 @@ class UserProvider extends ChangeNotifier {
 
 
 
+  // get current user follow list
+  Future<List<UserModel>> getCurrentUserFollowing() async {
+     final user = FirebaseAuth.instance.currentUser;
+     try {
+        DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+        final data = snapshot.data() as Map<String, dynamic>;
+        final followerIds = (data['following'] as List).cast<String>();
+        
+        if (followerIds.isEmpty) {
+          return [];
+        }
+        
+        final followerUsers = await Future.wait(
+          followerIds.map((id) => FirebaseFirestore.instance.collection('users').doc(id).get())
+        );
+
+        return followerUsers.map((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return UserModel.fromJson(data);
+        }).toList();
+     } catch (e) {
+       return [];
+     }
+  }
+
+
+  // get current user followers list
+  Future<List<UserModel>> getCurrentUserFollowers() async {
+    final user = FirebaseAuth.instance.currentUser;
+     
+        DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+        final data = snapshot.data() as Map<String, dynamic>;
+        final followerIds = (data['followers'] as List).cast<String>();
+        
+        final followerUsers = await Future.wait(
+          followerIds.map((id) => FirebaseFirestore.instance.collection('users').doc(id).get())
+        );
+
+        return followerUsers.map((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return UserModel.fromJson(data);
+        }).toList();
+     
+  }
 }

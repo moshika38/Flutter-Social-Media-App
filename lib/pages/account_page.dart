@@ -245,7 +245,7 @@ class _AccountPageState extends State<AccountPage> {
                                     icon: const Icon(Icons.person_add_rounded,
                                         color: Colors.white),
                                     label: Text(
-                                      isFollowing ? 'UnFollow' : 'Follow',
+                                      isFollowing ? 'Un Follow' : 'Follow',
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,

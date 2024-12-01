@@ -6,6 +6,7 @@ import 'package:test_app_flutter/pages/comment_page.dart';
 import 'package:test_app_flutter/providers/comment_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
+import 'package:test_app_flutter/utils/app_url.dart';
 import 'package:test_app_flutter/widget/progress_bar.dart';
 
 class UserPost extends StatefulWidget {
@@ -123,7 +124,11 @@ class _UserPostState extends State<UserPost> {
                   ),
                   child: CircleAvatar(
                     radius: widget.isGoAccount ? 20 : 15,
-                    backgroundImage: NetworkImage(widget.userImage),
+                    backgroundImage: NetworkImage(
+                      widget.userImage.isNotEmpty
+                          ? widget.userImage
+                          : AppUrl.baseUserUrl,
+                    ),
                   ),
                 ),
               ),
@@ -175,15 +180,22 @@ class _UserPostState extends State<UserPost> {
                         // await postProvider.addLikeCount(widget.postId, 1);
                       }
                     },
-                    child: Image.network(
-                      widget.postImage,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(child: ProgressBar());
-                      },
-                    ),
+                    child: widget.postImage.isNotEmpty
+                        ? Image.network(
+                            widget.postImage,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return const Center(child: ProgressBar());
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Center(
+                                child: Icon(Icons.error_outline),
+                              );
+                            },
+                          )
+                        : const SizedBox(),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
