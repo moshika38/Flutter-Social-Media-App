@@ -19,6 +19,7 @@ class MessageProvider extends ChangeNotifier {
       message: message,
       messageType: 'text',
       timeStamp: DateTime.now().toIso8601String(),
+      isSeen: false,
     ).toJson();
 
     // Add message to subCollection
@@ -32,8 +33,42 @@ class MessageProvider extends ChangeNotifier {
     await _firestore.collection('users').doc(senderId).update({
       'chatsID': FieldValue.arrayUnion([chatId]),
     });
+    await _firestore.collection('users').doc(receiverId).update({
+      'chatsID': FieldValue.arrayUnion([chatId]),
+    });
 
     notifyListeners();
+  }
+
+  // update isSeen
+  Future<void> updateIsSeen(String senderId, String receiverId) async {
+    final chatId = getChatId(senderId, receiverId);
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .where('senderId', isEqualTo: receiverId)
+        .where('isSeen', isEqualTo: false)
+        .get()
+        .then((snapshot) {
+      for (var doc in snapshot.docs) {
+        doc.reference.update({'isSeen': true});
+      }
+    });
+    notifyListeners();
+  }
+
+  // return isSeen false massage count
+  Future<int> getUnSeenMassageCount(String senderId, String receiverId) async {
+    final chatId = getChatId(senderId, receiverId);
+    final snapshot = await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .where('senderId', isEqualTo: receiverId)
+        .where('isSeen', isEqualTo: false)
+        .get();
+    return snapshot.docs.length;
   }
 
   // get chatID
@@ -69,6 +104,7 @@ class MessageProvider extends ChangeNotifier {
         .collection('messages')
         .doc(messageId)
         .delete();
+    notifyListeners();
   }
 
   // clear chat
@@ -113,9 +149,18 @@ class MessageProvider extends ChangeNotifier {
   }
 
   // get last message from chat
-  Future<MessageModel?> getLastMessage(String senderId, String reciverId) async {
+  Future<MessageModel?> getLastMessage(
+      String senderId, String reciverId) async {
     final chatId = getChatId(senderId, reciverId);
-    final snapshot = await _firestore.collection('chats').doc(chatId).collection('messages').orderBy('timeStamp', descending: true).limit(1).get();
-    return snapshot.docs.map((doc) => MessageModel.fromJson(doc.data())).firstOrNull;
+    final snapshot = await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('timeStamp', descending: true)
+        .limit(1)
+        .get();
+    return snapshot.docs
+        .map((doc) => MessageModel.fromJson(doc.data()))
+        .firstOrNull;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
 
@@ -8,6 +9,9 @@ class ChatUserCart extends StatelessWidget {
   final String imageUrl;
   final String massageTime;
   final int? numMassage;
+  final bool isSeen;
+  final String senderId;
+
   const ChatUserCart({
     super.key,
     required this.index,
@@ -16,6 +20,8 @@ class ChatUserCart extends StatelessWidget {
     required this.imageUrl,
     this.numMassage,
     required this.massageTime,
+    required this.isSeen,
+    required this.senderId,
   });
 
   @override
@@ -33,22 +39,6 @@ class ChatUserCart extends StatelessWidget {
                 backgroundImage: NetworkImage(
                     imageUrl == "" ? AppUrl.baseUserUrl : imageUrl),
                 radius: 30,
-              ),
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: 16,
-                  height: 16,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      width: 2,
-                    ),
-                  ),
-                ),
               ),
             ],
           ),
@@ -81,22 +71,27 @@ class ChatUserCart extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    numMassage.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                senderId == FirebaseAuth.instance.currentUser!.uid
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          numMassage.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : Icon(
+                        Icons.check_circle,
+                        color: isSeen ? Colors.green : Colors.grey,
+                      ),
               ],
             ),
           ),

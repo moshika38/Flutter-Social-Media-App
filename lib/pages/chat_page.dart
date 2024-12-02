@@ -25,6 +25,11 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final messageProvider = Provider.of<MessageProvider>(context, listen: false);
+    messageProvider.updateIsSeen(
+      FirebaseAuth.instance.currentUser!.uid,
+      widget.receiverId,
+    );
     userProvider
         .getUserById(FirebaseAuth.instance.currentUser!.uid)
         .then((user) {
@@ -54,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     Text(
-                      'Online',
+                      user.email,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Theme.of(context).colorScheme.surface,
                           ),
@@ -89,7 +94,7 @@ class _ChatPageState extends State<ChatPage> {
                               const Divider(),
                               TextButton(
                                 onPressed: () {
-                                  messageProvider.clearChat(
+                                  messageProvider.deleteChat(
                                     FirebaseAuth.instance.currentUser!.uid,
                                     widget.receiverId,
                                   );

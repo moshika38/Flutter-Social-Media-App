@@ -4,6 +4,7 @@ class MessageModel {
   final String receiverId;
   final String timeStamp;
   final String messageType;
+  final bool isSeen;
 
   MessageModel({
     required this.message,
@@ -11,6 +12,7 @@ class MessageModel {
     required this.receiverId,
     required this.timeStamp,
     required this.messageType,
+    required this.isSeen,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class MessageModel {
       receiverId: json['receiverId'] as String,
       timeStamp: json['timeStamp'] as String,
       messageType: json['messageType'] as String,
+      isSeen: json['isSeen'] as bool,
     );
   }
 
@@ -30,6 +33,7 @@ class MessageModel {
       'receiverId': receiverId,
       'timeStamp': timeStamp,
       'messageType': messageType,
+      'isSeen': isSeen,
     };
   }
 }

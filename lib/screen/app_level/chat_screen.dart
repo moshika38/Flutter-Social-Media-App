@@ -9,9 +9,14 @@ import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/widget/chat_user_cart.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -112,27 +117,43 @@ class ChatScreen extends StatelessWidget {
                                     FirebaseAuth.instance.currentUser!.uid,
                                     allUser[index].id),
                                 builder: (context, messageSnapshot) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      context.pushNamed('chat_page',
-                                          extra: allUser[index].id);
+                                  // get unSeen massage count
+                                  return FutureBuilder<int>(
+                                    future:
+                                        messageProvider.getUnSeenMassageCount(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                            allUser[index].id),
+                                    builder: (context, unreadSnapshot) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          context.pushNamed('chat_page',
+                                              extra: allUser[index].id);
+                                        },
+                                        child: ChatUserCart(
+                                          senderId: messageSnapshot.data?.senderId??"",
+                                          index: index,
+                                          userName: allUser[index].name,
+                                          lastMassage:
+                                              messageSnapshot.data?.message ??
+                                                  'No messages yet',
+                                          imageUrl: allUser[index]
+                                              .profilePicture
+                                              .toString(),
+                                          massageTime: messageSnapshot
+                                                  .data?.timeStamp
+                                                  .split('T')[1]
+                                                  .split('.')[0] ??
+                                              '00:00 PM',
+                                          numMassage: unreadSnapshot.data ?? 0,
+                                          isSeen:
+                                              messageSnapshot.data?.isSeen ==
+                                                      true
+                                                  ? true
+                                                  : false,
+                                        ),
+                                      );
                                     },
-                                    child: ChatUserCart(
-                                      index: index,
-                                      userName: allUser[index].name,
-                                      lastMassage:
-                                          messageSnapshot.data?.message ??
-                                              'No messages yet',
-                                      imageUrl: allUser[index]
-                                          .profilePicture
-                                          .toString(),
-                                      massageTime: messageSnapshot
-                                              .data?.timeStamp
-                                              .split('T')[1]
-                                              .split('.')[0] ??
-                                          '00:00 PM',
-                                      numMassage: 2,
-                                    ),
                                   );
                                 },
                               );
