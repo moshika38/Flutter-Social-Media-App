@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/comment_provider.dart';
+import 'package:test_app_flutter/providers/massege_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/theme_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
@@ -26,6 +27,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => PostProvider()),
         ChangeNotifierProvider(create: (context) => CommentProvider()),
+        ChangeNotifierProvider(create: (context) => MessageProvider()),
       ],
       child: const MyApp(),
     ),

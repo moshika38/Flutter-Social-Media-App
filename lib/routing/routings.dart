@@ -113,7 +113,9 @@ class Routings {
                   GoRoute(
                     name: 'chat_page',
                     path: '/chat_page',
-                    builder: (context, state) => const ChatPage(),
+                    builder: (context, state) => ChatPage(
+                      receiverId: state.extra as String,
+                    ),
                   ),
                 ],
               ),

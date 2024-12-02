@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
@@ -277,7 +278,10 @@ class _AccountPageState extends State<AccountPage> {
                                     ],
                                   ),
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      context.pushNamed('chat_page',
+                                          extra: widget.uid);
+                                    },
                                     icon: Icon(
                                       Icons.chat_bubble_outline_rounded,
                                       color:
