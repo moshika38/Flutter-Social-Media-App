@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:test_app_flutter/utils/app_url.dart';
 
 class StoryViewPage {
   final List<String> imageList;
+  final String userName;
+  final String userImage;
+  final String uploadTime;
 
   StoryViewPage({
+    required this.userName,
+    required this.userImage,
+    required this.uploadTime,
     required this.imageList,
   });
 
@@ -88,26 +95,27 @@ class StoryViewPage {
                               onPressed: () => Navigator.pop(context),
                             ),
                             const SizedBox(width: 8),
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 20,
-                              backgroundImage: AssetImage(
-                                  'assets/images/sample.jpg'), // user image
+                              backgroundImage: NetworkImage(userImage != ""
+                                  ? userImage
+                                  : AppUrl.baseUserUrl), // user image
                             ),
                             const SizedBox(width: 12),
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  'User Name',
-                                  style: TextStyle(
+                                  userName,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  '2h ago',
-                                  style: TextStyle(
+                                  uploadTime,
+                                  style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 12,
                                   ),
@@ -139,36 +147,6 @@ class StoryViewPage {
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-
-                    // Bottom Views Section
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.7),
-                              Colors.transparent,
-                            ],
-                          ),
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.remove_red_eye, color: Colors.white),
-                            SizedBox(width: 8),
-                            Text(
-                              '1.2K views',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
                         ),
                       ),
                     ),

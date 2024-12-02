@@ -7,7 +7,6 @@ import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
-import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
 class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
@@ -26,7 +25,6 @@ class _StoryScreenState extends State<StoryScreen> {
             'Stories',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          actions: const [ToggleThemeBtn()],
         ),
         body: Consumer<UserProvider>(
           builder: (context, userProvider, child) => FutureBuilder(
@@ -37,7 +35,8 @@ class _StoryScreenState extends State<StoryScreen> {
                 return Column(
                   children: [
                     // My Story Section
-                    _buildMyStory(snapshot.data),
+                    _buildMyStory(
+                        snapshot.data!.profilePicture.toString(), userProvider),
 
                     // body
                     const Padding(
@@ -97,7 +96,7 @@ class _StoryScreenState extends State<StoryScreen> {
     );
   }
 
-  Widget _buildMyStory(UserModel? user) {
+  Widget _buildMyStory(String imageUrl, UserProvider userProvider) {
     return ListTile(
       leading: GestureDetector(
         onTap: () {
@@ -108,9 +107,7 @@ class _StoryScreenState extends State<StoryScreen> {
             CircleAvatar(
               radius: 30,
               backgroundImage: NetworkImage(
-                user?.profilePicture == ""
-                    ? AppUrl.baseUserUrl
-                    : user!.profilePicture.toString(),
+                imageUrl == "" ? AppUrl.baseUserUrl : imageUrl.toString(),
               ),
             ),
             Positioned(
@@ -140,14 +137,15 @@ class _StoryScreenState extends State<StoryScreen> {
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       subtitle: const Text('Tap to add status update'),
+       
     );
   }
 
   Widget _buildStoryItem(
       int index, List<UserModel> availableUserList, UserProvider userProvider) {
     return FutureBuilder<StoryModel?>(
-        future:
-            userProvider.getStoryByStoryId(availableUserList[index].stories[index]),
+        future: userProvider
+            .getStoryByStoryId(availableUserList[index].stories.first),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const SizedBox();
 
@@ -173,13 +171,18 @@ class _StoryScreenState extends State<StoryScreen> {
                 "Today ${story.uploadTime.split("T")[1].split(":")[0]}:${story.uploadTime.split("T")[1].split(":")[1]}";
           }
 
-           
           return GestureDetector(
             onTap: () async {
-              final imageList = await userProvider
-                  .getStoryImageUrlsByStoryIds(availableUserList[index].stories);
+              final imageList = await userProvider.getStoryImageUrlsByStoryIds(
+                  availableUserList[index].stories);
               if (!context.mounted) return;
-              StoryViewPage(imageList: imageList).showStoryView(context);
+              StoryViewPage(
+                      imageList: imageList,
+                      userName: availableUserList[index].name,
+                      userImage:
+                          availableUserList[index].profilePicture.toString(),
+                      uploadTime: date)
+                  .showStoryView(context);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
