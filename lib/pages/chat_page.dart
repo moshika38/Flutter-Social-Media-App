@@ -25,7 +25,8 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final messageProvider = Provider.of<MessageProvider>(context, listen: false);
+    final messageProvider =
+        Provider.of<MessageProvider>(context, listen: false);
     messageProvider.updateIsSeen(
       FirebaseAuth.instance.currentUser!.uid,
       widget.receiverId,
@@ -79,12 +80,14 @@ class _ChatPageState extends State<ChatPage> {
                           title: Column(
                             children: [
                               TextButton(
-                                onPressed: () {
-                                  messageProvider.deleteChat(
+                                onPressed: () async {
+                                  // delete chat
+                                  await messageProvider.deleteMessage(
                                     FirebaseAuth.instance.currentUser!.uid,
                                     widget.receiverId,
                                   );
                                   context.pop();
+                                  context.goNamed('chat');
                                 },
                                 child: Text(
                                   'Delete Chat',
@@ -94,7 +97,8 @@ class _ChatPageState extends State<ChatPage> {
                               const Divider(),
                               TextButton(
                                 onPressed: () {
-                                  messageProvider.deleteChat(
+                                  // clear chat
+                                  messageProvider.clearChat(
                                     FirebaseAuth.instance.currentUser!.uid,
                                     widget.receiverId,
                                   );

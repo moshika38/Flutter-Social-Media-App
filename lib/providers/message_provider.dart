@@ -96,32 +96,52 @@ class MessageProvider extends ChangeNotifier {
     });
   }
 
-  // delete message from chat
-  Future<void> deleteMessage(String chatId, String messageId) async {
-    await _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .doc(messageId)
-        .delete();
-    notifyListeners();
-  }
+  // delete message from chat by chatID
+  Future<void> deleteMessage(
+      String senderId, String recivedId, ) async {
+    final chatId = getChatId(senderId, recivedId);
 
-  // clear chat
-  Future<void> clearChat(String senderId, String reciverId) async {
-    final chatId = getChatId(senderId, reciverId);
-    await _firestore
+    // First delete all messages in the subcollection
+    final messagesSnapshot = await _firestore
         .collection('chats')
         .doc(chatId)
         .collection('messages')
         .get();
+
+    for (var doc in messagesSnapshot.docs) {
+      await doc.reference.delete();
+    }
+
+    // Update user's chatsID list to remove this chat
+    final userDoc = await _firestore.collection('users').doc(senderId).get();
+    if (userDoc.exists) {
+      List<String> chatsID =
+          List<String>.from(userDoc.data()?['chatsID'] ?? []);
+      chatsID.remove(chatId);
+      await _firestore.collection('users').doc(senderId).update({
+        'chatsID': chatsID,
+      });
+    }
+
+    // Then delete the chat document itself
+    await _firestore.collection('chats').doc(chatId).delete();
+
     notifyListeners();
+     
   }
 
-  // delete chat
-  Future<void> deleteChat(String senderId, String reciverId) async {
-    final chatId = getChatId(senderId, reciverId);
-    await _firestore.collection('chats').doc(chatId).delete();
+  // clear chat
+  Future<void> clearChat(String senderId, String recivedId) async {
+    final chatId = getChatId(senderId, recivedId);
+    final snapshot = await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .get();
+
+    for (var doc in snapshot.docs) {
+      await doc.reference.delete();
+    }
     notifyListeners();
   }
 
