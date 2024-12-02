@@ -136,7 +136,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           userName: allUser[index].name,
                                           lastMassage:
                                               messageSnapshot.data?.message ??
-                                                  'No messages yet',
+                                                  '',
                                           imageUrl: allUser[index]
                                               .profilePicture
                                               .toString(),

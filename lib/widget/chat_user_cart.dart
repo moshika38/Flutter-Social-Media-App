@@ -40,6 +40,27 @@ class ChatUserCart extends StatelessWidget {
                     imageUrl == "" ? AppUrl.baseUserUrl : imageUrl),
                 radius: 30,
               ),
+              senderId != FirebaseAuth.instance.currentUser!.uid &&
+                      numMassage != 0
+                  ? Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.surface,
+                        ),
+                        child: Center(
+                          child: Text(
+                            numMassage.toString(),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
           title: Row(
@@ -71,27 +92,12 @@ class ChatUserCart extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                senderId == FirebaseAuth.instance.currentUser!.uid
-                    ? Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          numMassage.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                senderId == FirebaseAuth.instance.currentUser!.uid && isSeen
+                    ? Icon(
+                        Icons.checklist_outlined,
+                        color: Colors.green,
                       )
-                    : Icon(
-                        Icons.check_circle,
-                        color: isSeen ? Colors.green : Colors.grey,
-                      ),
+                    : Icon(Icons.checklist_outlined, color: Colors.grey),
               ],
             ),
           ),
