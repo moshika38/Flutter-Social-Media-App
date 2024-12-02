@@ -219,6 +219,7 @@ class UserProvider extends ChangeNotifier {
           followers: [],
           following: [],
           stories: [],
+          chatsID: [],
         );
         await FirebaseFirestore.instance
             .collection('users')

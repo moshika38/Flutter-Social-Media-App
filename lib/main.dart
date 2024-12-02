@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/providers/comment_provider.dart';
-import 'package:test_app_flutter/providers/massege_provider.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/theme_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
@@ -11,6 +10,7 @@ import 'package:test_app_flutter/utils/theme.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:test_app_flutter/providers/message_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

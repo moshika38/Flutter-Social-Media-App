@@ -284,15 +284,12 @@ class _AccountPageState extends State<AccountPage> {
                                     },
                                     icon: Icon(
                                       Icons.chat_bubble_outline_rounded,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      color: Colors.white,
                                     ),
                                     label: Text(
                                       'Message',
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

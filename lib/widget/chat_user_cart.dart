@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_app_flutter/utils/app_url.dart';
 
 class ChatUserCart extends StatelessWidget {
   final int index;
@@ -29,7 +30,8 @@ class ChatUserCart extends StatelessWidget {
           leading: Stack(
             children: [
               CircleAvatar(
-                backgroundImage: Image.asset(imageUrl).image,
+                backgroundImage: NetworkImage(
+                    imageUrl == "" ? AppUrl.baseUserUrl : imageUrl),
                 radius: 30,
               ),
               Positioned(

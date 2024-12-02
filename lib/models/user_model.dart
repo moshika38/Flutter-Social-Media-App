@@ -6,6 +6,7 @@ class UserModel {
   final List<String> followers;
   final List<String> following;
   final List<String> stories;
+  final List<String> chatsID;
 
   UserModel({
     required this.id,
@@ -15,6 +16,7 @@ class UserModel {
     required this.followers,
     required this.following,
     this.stories = const [],
+    required this.chatsID,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class UserModel {
       followers: List<String>.from(json['followers'] ?? []),
       following: List<String>.from(json['following'] ?? []),
       stories: List<String>.from(json['stories'] ?? []),
+      chatsID: List<String>.from(json['chatsID'] ?? []),
     );
   }
 
@@ -38,6 +41,7 @@ class UserModel {
       'followers': followers,
       'following': following,
       'stories': stories,
+      'chatsID': chatsID,
     };
   }
 }
