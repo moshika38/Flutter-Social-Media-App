@@ -291,13 +291,16 @@ class UserProvider extends ChangeNotifier {
             .update({'profilePicture': response.secureUrl});
         notifyListeners();
         AwesomeNotifications().createNotification(
-              content: NotificationContent(
+          content: NotificationContent(
             id: 10,
             channelKey: 'basic_channel',
             actionType: ActionType.Default,
             title: 'Profile Picture Updated',
-            body: 'Your profile picture has been updated successfully!',
-          ));
+            body: 'Profile picture updated successfully!',
+            bigPicture: response.secureUrl,
+            notificationLayout: NotificationLayout.BigPicture,
+          ),
+        );
       } else {
         throw Exception('Failed to upload image');
       }
@@ -468,7 +471,6 @@ class UserProvider extends ChangeNotifier {
       isUploadStory = false;
       notifyListeners();
     }
-    // await FirebaseFirestore.instance.collection('stories').doc().set({});
   }
 
   Future<void> uploadStoryImage(
@@ -561,7 +563,8 @@ class UserProvider extends ChangeNotifier {
   }
 
   //return story imageUrls for given storyId list
-  Future<List<String>> getStoryImageUrlsByStoryIds(List<String> storyIds) async {
+  Future<List<String>> getStoryImageUrlsByStoryIds(
+      List<String> storyIds) async {
     List<String> imageUrls = [];
     for (String storyId in storyIds) {
       final snapshot = await FirebaseFirestore.instance
@@ -572,9 +575,4 @@ class UserProvider extends ChangeNotifier {
     }
     return imageUrls;
   }
-
-   
-
-  
 }
-
