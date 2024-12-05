@@ -93,7 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         final allUser = snapshot.data;
 
                         if (allUser!.isEmpty) {
-                          return Expanded(
+                          return const Expanded(
                             child: Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,

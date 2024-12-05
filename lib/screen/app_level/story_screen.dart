@@ -7,6 +7,7 @@ import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/pages/story_view_page.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
+import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
 class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
@@ -25,6 +26,7 @@ class _StoryScreenState extends State<StoryScreen> {
             'Stories',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
+          actions: [ToggleThemeBtn()],
         ),
         body: Consumer<UserProvider>(
           builder: (context, userProvider, child) => FutureBuilder(

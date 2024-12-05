@@ -2,14 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
 import 'package:test_app_flutter/models/user_model.dart';
-import 'package:test_app_flutter/pages/story_view_page.dart';
 import 'package:test_app_flutter/providers/post_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
-import 'package:test_app_flutter/widget/user_post.dart';
 import 'package:test_app_flutter/widget/post_bottom_app_bar.dart';
+import 'package:test_app_flutter/widget/search_bar.dart';
+import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
+import 'package:test_app_flutter/widget/user_post.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  int _selectedCategoryIndex = 0;
+
+  final List<String> categories = [
+    'All',
+    'Followers',
+    'Following',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +52,7 @@ class HomeScreen extends StatelessWidget {
           ),
           automaticallyImplyLeading: false,
           actions: [
+            ToggleThemeBtn(),
             IconButton(
               icon: const Icon(Icons.notifications),
               onPressed: () {},
@@ -32,41 +61,40 @@ class HomeScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            const SizedBox(height: 10),
+            const CustomSearchBar(),
+            const SizedBox(height: 5),
             SizedBox(
-              height: 100,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      child: GestureDetector(
-                        onTap: () {
+              height: 80,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _buildActionBtn("Create", () {
                           PostBottomAppBar().showPostBottomAppBar(context);
-                        },
-                        child: const CreatePostBtn(),
-                      ),
-                    ),
-                    Row(
-                      children: List.generate(
-                        8,
-                        (index) => GestureDetector(
-                          onTap: () {
-                            StoryViewPage(
-                                    imageList: [],
-                                    userName: '',
-                                    userImage: '',
-                                    uploadTime: '')
-                                .showStoryView(context);
-                          },
-                          child: const UserStoryCard(),
+                        }),
+                        _buildActionBtn("News", () {}),
+                        ...List.generate(
+                          categories.length,
+                          (index) => CategoryButton(
+                            label: categories[index],
+                            isSelected: _selectedCategoryIndex == index,
+                            onTap: () {
+                              setState(() {
+                                _selectedCategoryIndex = index;
+                              });
+                            },
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
+            const SizedBox(height: 5),
             Consumer2<PostProvider, UserProvider>(
               builder: (context, postProvider, userProvider, child) =>
                   FutureBuilder(
@@ -131,93 +159,67 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-class UserStoryCard extends StatelessWidget {
-  const UserStoryCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 70, // Increased size
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 30, // Increased radius
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            child: const CircleAvatar(
-              radius: 28, // Inner circle for border effect
-              backgroundImage: AssetImage('assets/images/user.jpg'),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'User',
-            style: Theme.of(context).textTheme.bodySmall,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+  Widget _buildActionBtn(String text, VoidCallback onPress) {
+    return GestureDetector(
+      onTap: onPress,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          text,
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(color: Colors.white),
+        ),
       ),
     );
   }
 }
 
-class CreatePostBtn extends StatelessWidget {
-  const CreatePostBtn({super.key});
+class CategoryButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const CategoryButton({
+    super.key,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 70,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                child: const Icon(Icons.add, color: Colors.white),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Create  ',
-                style: Theme.of(context).textTheme.bodySmall,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary,
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).colorScheme.surface
+                : Theme.of(context).colorScheme.secondary,
+            width: 2,
           ),
+          borderRadius: BorderRadius.circular(20),
         ),
-        GestureDetector(
-          onTap: () {
-            StoryViewPage(imageList: [], userName: '', userImage: '', uploadTime: '').showStoryView(context);
-          },
-          child: Container(
-            width: 70, // Increased size
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 30, // Increased radius
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  child: const CircleAvatar(
-                    radius: 23, // Inner circle for border effect
-                    backgroundImage: AssetImage('assets/images/icon2.png'),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'News',
-                  style: Theme.of(context).textTheme.bodySmall,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: isSelected
+                    ? Theme.of(context).colorScheme.surface
+                    : Colors.grey,
+              ),
         ),
-      ],
+      ),
     );
   }
 }

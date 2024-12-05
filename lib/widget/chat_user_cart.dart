@@ -60,7 +60,7 @@ class ChatUserCart extends StatelessWidget {
                         ),
                       ),
                     )
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
             ],
           ),
           title: Row(
@@ -93,11 +93,11 @@ class ChatUserCart extends StatelessWidget {
                   ),
                 ),
                 senderId == FirebaseAuth.instance.currentUser!.uid && isSeen
-                    ? Icon(
+                    ? const Icon(
                         Icons.checklist_outlined,
                         color: Colors.green,
                       )
-                    : Icon(Icons.checklist_outlined, color: Colors.grey),
+                    : const Icon(Icons.checklist_outlined, color: Colors.grey),
               ],
             ),
           ),

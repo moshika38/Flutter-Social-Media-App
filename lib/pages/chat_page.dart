@@ -128,7 +128,7 @@ class _ChatPageState extends State<ChatPage> {
                       if (snapshot.hasData) {
                         final messages = snapshot.data!;
                         if (messages.isEmpty) {
-                          return Expanded(
+                          return const Expanded(
                             child: Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,

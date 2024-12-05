@@ -282,11 +282,11 @@ class _AccountPageState extends State<AccountPage> {
                                       context.pushNamed('chat_page',
                                           extra: widget.uid);
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.chat_bubble_outline_rounded,
                                       color: Colors.white,
                                     ),
-                                    label: Text(
+                                    label: const Text(
                                       'Message',
                                       style: TextStyle(
                                         color: Colors.white,
