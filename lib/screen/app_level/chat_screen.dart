@@ -131,7 +131,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                               extra: allUser[index].id);
                                         },
                                         child: ChatUserCart(
-                                          senderId: messageSnapshot.data?.senderId??"",
+                                          senderId:
+                                              messageSnapshot.data?.senderId ??
+                                                  "",
                                           index: index,
                                           userName: allUser[index].name,
                                           lastMassage:
@@ -144,7 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   .data?.timeStamp
                                                   .split('T')[1]
                                                   .split('.')[0] ??
-                                              '00:00 PM',
+                                              '',
                                           numMassage: unreadSnapshot.data ?? 0,
                                           isSeen:
                                               messageSnapshot.data?.isSeen ==

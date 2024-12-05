@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_app_flutter/models/post_model.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class PostProvider with ChangeNotifier {
   bool isLoading = false;
@@ -74,6 +75,14 @@ class PostProvider with ChangeNotifier {
         isLoading = false;
         if (context.mounted) {
           context.pushNamed('home');
+          AwesomeNotifications().createNotification(
+              content: NotificationContent(
+            id: 10,
+            channelKey: 'basic_channel',
+            actionType: ActionType.Default,
+            title: 'Post Created',
+            body: 'Your post has been created successfully!',
+          ));
         }
         notifyListeners();
       }

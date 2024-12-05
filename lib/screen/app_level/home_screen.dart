@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
@@ -19,17 +20,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int _selectedCategoryIndex = 0;
-
-  final List<String> categories = [
-    'All',
-    'Followers',
-    'Following',
-  ];
 
   @override
   void initState() {
     super.initState();
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
     _tabController = TabController(length: 5, vsync: this);
   }
 
@@ -59,41 +59,18 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ],
         ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            PostBottomAppBar().showPostBottomAppBar(context);
+          },
+          icon: const Icon(Icons.add),
+          label: const Text('Create'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
         body: Column(
           children: [
             const CustomSearchBar(),
             const SizedBox(height: 5),
-            SizedBox(
-              height: 80,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _buildActionBtn("Create", () {
-                          PostBottomAppBar().showPostBottomAppBar(context);
-                        }),
-                        _buildActionBtn("News", () {}),
-                        ...List.generate(
-                          categories.length,
-                          (index) => CategoryButton(
-                            label: categories[index],
-                            isSelected: _selectedCategoryIndex == index,
-                            onTap: () {
-                              setState(() {
-                                _selectedCategoryIndex = index;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
             const SizedBox(height: 5),
             Consumer2<PostProvider, UserProvider>(
               builder: (context, postProvider, userProvider, child) =>
@@ -155,69 +132,6 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionBtn(String text, VoidCallback onPress) {
-    return GestureDetector(
-      onTap: onPress,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          text,
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge
-              ?.copyWith(color: Colors.white),
-        ),
-      ),
-    );
-  }
-}
-
-class CategoryButton extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const CategoryButton({
-    super.key,
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-          border: Border.all(
-            color: isSelected
-                ? Theme.of(context).colorScheme.surface
-                : Theme.of(context).colorScheme.secondary,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: isSelected
-                    ? Theme.of(context).colorScheme.surface
-                    : Colors.grey,
-              ),
         ),
       ),
     );

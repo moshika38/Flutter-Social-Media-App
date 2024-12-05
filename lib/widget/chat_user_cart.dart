@@ -55,7 +55,10 @@ class ChatUserCart extends StatelessWidget {
                         child: Center(
                           child: Text(
                             numMassage.toString(),
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.white),
                           ),
                         ),
                       ),

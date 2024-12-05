@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloudinary/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -289,6 +290,14 @@ class UserProvider extends ChangeNotifier {
             .doc(uid)
             .update({'profilePicture': response.secureUrl});
         notifyListeners();
+        AwesomeNotifications().createNotification(
+              content: NotificationContent(
+            id: 10,
+            channelKey: 'basic_channel',
+            actionType: ActionType.Default,
+            title: 'Profile Picture Updated',
+            body: 'Your profile picture has been updated successfully!',
+          ));
       } else {
         throw Exception('Failed to upload image');
       }
@@ -502,6 +511,14 @@ class UserProvider extends ChangeNotifier {
         isUploadStory = false;
         if (context.mounted) {
           context.pop();
+          AwesomeNotifications().createNotification(
+              content: NotificationContent(
+            id: 10,
+            channelKey: 'basic_channel',
+            actionType: ActionType.Default,
+            title: 'Story Created',
+            body: 'Your story has been created successfully!',
+          ));
         }
         notifyListeners();
       }
