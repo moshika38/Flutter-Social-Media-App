@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/utils/app_url.dart';
+import 'package:test_app_flutter/widget/search_bar.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
 class DisplayUserScreen extends StatefulWidget {
@@ -50,22 +51,8 @@ class _DisplayUserScreenState extends State<DisplayUserScreen>
         ),
         body: Column(
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search friends...',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  filled: true,
-                  fillColor:
-                      Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-                ),
-              ),
-            ),
+            const CustomSearchBar(),
+            const SizedBox(height: 10),
             TabBar(
               controller: _tabController,
               labelStyle: Theme.of(context).textTheme.titleMedium,

@@ -7,6 +7,7 @@ import 'package:test_app_flutter/models/user_model.dart';
 import 'package:test_app_flutter/providers/message_provider.dart';
 import 'package:test_app_flutter/providers/user_provider.dart';
 import 'package:test_app_flutter/widget/chat_user_cart.dart';
+import 'package:test_app_flutter/widget/search_bar.dart';
 import 'package:test_app_flutter/widget/toggle_theme_btn.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -31,51 +32,8 @@ class _ChatScreenState extends State<ChatScreen> {
         body: Column(
           children: [
             // Search bar
-            Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: TextField(
-                style: Theme.of(context).textTheme.bodyMedium,
-                decoration: InputDecoration(
-                  hintText: 'Search messages...',
-                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.5),
-                      ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.7),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .outline
-                          .withOpacity(0.3),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-              ),
-            ),
+            const CustomSearchBar(),
+            const SizedBox(height: 10),
 
             // Chat list
             Consumer2<MessageProvider, UserProvider>(

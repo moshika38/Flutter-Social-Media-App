@@ -575,4 +575,19 @@ class UserProvider extends ChangeNotifier {
     }
     return imageUrls;
   }
+
+
+  // search user
+  Stream<List<UserModel>> searchUser(String query) async* {
+    yield* FirebaseFirestore.instance
+        .collection('users')
+        .where('name', isEqualTo: query)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) =>
+                  UserModel.fromJson(doc.data() as Map<String, dynamic>))
+              .toList(),
+        );
+  }
 }

@@ -5,6 +5,7 @@ import 'package:test_app_flutter/pages/account_page.dart';
 import 'package:test_app_flutter/pages/chat_page.dart';
 import 'package:test_app_flutter/pages/create_post_page.dart';
 import 'package:test_app_flutter/pages/create_story_page.dart';
+import 'package:test_app_flutter/pages/search_page.dart';
 import 'package:test_app_flutter/screen/app_level/chat_screen.dart';
 import 'package:test_app_flutter/screen/app_level/display_user_screen.dart';
 import 'package:test_app_flutter/screen/app_level/settings_screen.dart';
@@ -79,6 +80,11 @@ class Routings {
                     name: 'create_story',
                     path: '/create_story',
                     builder: (context, state) => const CreateStoryPage(),
+                  ),
+                  GoRoute(
+                    name: 'search',
+                    path: '/search',
+                    builder: (context, state) => const SearchPage(),
                   ),
                 ],
               ),
