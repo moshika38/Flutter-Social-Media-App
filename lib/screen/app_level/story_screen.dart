@@ -26,7 +26,7 @@ class _StoryScreenState extends State<StoryScreen> {
             'Stories',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          actions: [ToggleThemeBtn()],
+          actions: const [ToggleThemeBtn()],
         ),
         body: Consumer<UserProvider>(
           builder: (context, userProvider, child) => FutureBuilder(

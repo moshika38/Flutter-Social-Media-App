@@ -199,7 +199,7 @@ class UserProvider extends ChangeNotifier {
           : e.toString();
       SnackBars().showErrSnackBar(context, errorMessage);
     }
-    print('Error signing in with Facebook: $errorMessage');
+     
     isLoading = false;
     notifyListeners();
   }
@@ -244,7 +244,7 @@ class UserProvider extends ChangeNotifier {
         return UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
       }
     } catch (e) {
-      print('Error fetching user data: $e');
+       
     }
     return null;
   }
@@ -586,7 +586,7 @@ class UserProvider extends ChangeNotifier {
         .map(
           (snapshot) => snapshot.docs
               .map((doc) =>
-                  UserModel.fromJson(doc.data() as Map<String, dynamic>))
+                  UserModel.fromJson(doc.data()))
               .toList(),
         );
   }

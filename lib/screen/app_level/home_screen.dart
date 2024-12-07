@@ -1,5 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:test_app_flutter/models/post_model.dart';
 import 'package:test_app_flutter/models/user_model.dart';
@@ -52,10 +53,12 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           automaticallyImplyLeading: false,
           actions: [
-            ToggleThemeBtn(),
+            const ToggleThemeBtn(),
             IconButton(
               icon: const Icon(Icons.notifications),
-              onPressed: () {},
+              onPressed: () {
+                (context).pushNamed("notification");
+              },
             ),
           ],
         ),

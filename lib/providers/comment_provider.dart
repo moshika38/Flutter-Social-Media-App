@@ -39,7 +39,7 @@ class CommentProvider with ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      print('Error saving comment: $e');
+       
       rethrow;
     }
   }
@@ -53,7 +53,7 @@ class CommentProvider with ChangeNotifier {
           .delete();
       notifyListeners();
     } catch (e) {
-      print('Error deleting comment: $e');
+       
       rethrow;
     }
   }
@@ -75,7 +75,7 @@ class CommentProvider with ChangeNotifier {
         .where('postId', isEqualTo: postId)
         .get();
 
-    print("comment count is ${comments.docs.length}");
+     
     count = comments.docs.length;
     return count;
   }

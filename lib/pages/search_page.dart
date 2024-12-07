@@ -49,7 +49,7 @@ class _SearchPageState extends State<SearchPage> {
                 focusNode: _searchFocus,
               ),
 
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               // search result
               StreamBuilder(
                 stream: userProvider.searchUser(_searchController.text),

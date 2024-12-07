@@ -31,7 +31,7 @@ class _AccountPageState extends State<AccountPage> {
   void initState() {
     super.initState();
     if (widget.uid.isEmpty) {
-      print('Warning: Empty UID provided to AccountPage');
+       
       return;
     }
 
@@ -446,7 +446,7 @@ void _buildEditNameDialog(
         ElevatedButton(
           onPressed: () {
             if (formKey.currentState!.validate()) {
-              // TODO: Update name logic here
+               
               userProvider.updateUserName(uid, nameController.text);
               Navigator.pop(context);
             }

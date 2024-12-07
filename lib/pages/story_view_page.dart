@@ -15,7 +15,7 @@ class StoryViewPage {
   });
 
   void showStoryView(BuildContext context) {
-    print("image is $imageList");
+   
     int currentStoryIndex = 0;
 
     showModalBottomSheet(
