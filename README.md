@@ -13,11 +13,7 @@ A feature-rich social media app built with Flutter, providing users with an enga
 
 ## 🔍 Preview
 
-Add a preview image or screenshots here. Save your image in the repository (e.g., `assets/social_feed.png`) and update the path below:
-
-```markdown
-![Social Feed](assets/social_feed.png)
-```
+ ![social feed](https://github.com/user-attachments/assets/ef2dce85-1e6d-44a2-8bc6-da53c3064522)
 
 ## 🛠️ Tech Stack
 
